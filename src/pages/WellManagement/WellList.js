@@ -26,6 +26,10 @@ const nameSpace = "wellList"
 
 const FormItem = Form.Item;
 
+const roleType = { superAdmin: 0, Admin: 1, Operation: 2, User: 3 }
+const authority = JSON.parse(localStorage.getItem('cover-authority'))
+const role = roleType[authority[0]]
+
 const CreateForm = Form.create()(props => {
   const { form, record } = props;
   return (
@@ -226,21 +230,32 @@ class TableList extends PureComponent {
   }
 
   ExtendAction = (props) => (
-    <Dropdown
-      overlay={
-        <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
-          <Menu.Item key="owner"><a style={{ color: "#1890FF" }}>绑定业主</a></Menu.Item>
-          <Menu.Item key="device"><a style={{ color: "#1890FF" }}>绑定设备</a></Menu.Item>
-          <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>窨井详情</a></Menu.Item>
-        </Menu>
-      }
-    >
-      <a>
-        更多 <Icon type="down" />
-      </a>
-    </Dropdown>
+    role && role < 1 ?
+      <Dropdown
+        overlay={
+          <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
+            <Menu.Item key="owner"><a style={{ color: "#1890FF" }}>绑定业主</a></Menu.Item>
+            <Menu.Item key="device"><a style={{ color: "#1890FF" }}>绑定设备</a></Menu.Item>
+            <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>窨井详情</a></Menu.Item>
+          </Menu>
+        }
+      >
+        <a>
+          更多 <Icon type="down" />
+        </a>
+      </Dropdown> :
+      <a onClick={() => this.showProfile(props)}>窨井详情</a>
+  )
 
-  );
+  showProfile = (props) => {
+    const { record } = props
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/record`,
+      payload: record,
+    })
+    router.push('/wellmanagement/wellprofile')
+  }
 
   handleOk = () => {
     const { record, target, type } = this.state;
@@ -304,12 +319,15 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            {...this.props}
+            add={role && role < 1}
+            update={role && role < 1}
+            remove={role && role < 1}
             formValues={formValues}
             columns={this.columns}
             CreateForm={CreateForm}
             nameSpace={nameSpace}
             ExtendAction={this.ExtendAction}
+            {...this.props}
           />
         </div>
         <Modal
