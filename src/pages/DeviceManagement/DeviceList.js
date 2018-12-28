@@ -25,7 +25,9 @@ import styles from './Index.less';
 const nameSpace = "deviceList"
 
 const FormItem = Form.Item;
-
+const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
+const authority = JSON.parse(localStorage.getItem('cover-authority'))
+const role = roleType[authority[0]]
 const CreateForm = Form.create()(props => {
   const { form, record } = props;
   return (
@@ -227,20 +229,32 @@ class TableList extends PureComponent {
   }
 
   ExtendAction = (props) => (
-    <Dropdown
-      overlay={
-        <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
-          <Menu.Item key="sim"><a style={{ color: "#1890FF" }}>绑定sim卡</a></Menu.Item>
-          <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>设备详情</a></Menu.Item>
-        </Menu>
-      }
-    >
-      <a>
-        更多 <Icon type="down" />
-      </a>
-    </Dropdown>
+    role && role < 2 ?
+      <Dropdown
+        overlay={
+          <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
+            <Menu.Item key="sim"><a style={{ color: "#1890FF" }}>绑定sim卡</a></Menu.Item>
+            <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>设备详情</a></Menu.Item>
+          </Menu>
+        }
+      >
+        <a>
+          更多 <Icon type="down" />
+        </a>
+      </Dropdown> :
+      <a onClick={() => this.showProfile(props)}>设备详情</a>
 
   );
+
+  showProfile = (props) => {
+    const { record } = props
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/record`,
+      payload: record,
+    })
+    router.push('/devicemanagement/deviceprofile')
+  }
 
   onRowSelect = (record) => {
     this.setState({ target: record })
@@ -302,6 +316,9 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
+            add={role && role < 2}
+            update={role && role < 2}
+            remove={role && role < 2}
             {...this.props}
             formValues={formValues}
             columns={this.columns}

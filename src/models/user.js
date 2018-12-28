@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent } from '@/services/user';
+import { query as queryUsers, queryCurrent, updateCurrent } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -29,8 +29,17 @@ export default {
         reloadAuthorized();
         if (callback) callback()
       }
-
-
+    },
+    *updateCurrent({ callback, payload }, { call, put }) {
+      const response = yield call(updateCurrent, payload);
+      if (response) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload,
+        });
+        reloadAuthorized();
+        if (callback) callback()
+      }
     },
   },
 

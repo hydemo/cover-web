@@ -16,7 +16,9 @@ import styles from './Index.less';
 const nameSpace = "ownerList"
 
 const FormItem = Form.Item;
-
+const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
+const authority = JSON.parse(localStorage.getItem('cover-authority'))
+const role = roleType[authority[0]]
 const CreateForm = Form.create()(props => {
   const { form, record } = props;
   return (
@@ -205,6 +207,9 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
+            add={role && role < 2}
+            update={role && role < 2}
+            remove={role && role < 2}
             {...this.props}
             formValues={formValues}
             columns={this.columns}

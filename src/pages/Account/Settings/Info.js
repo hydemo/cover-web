@@ -17,9 +17,9 @@ class Info extends Component {
     const { match, location } = props;
     const menuMap = {
       base: <FormattedMessage id="app.settings.menuMap.basic" defaultMessage="Basic Settings" />,
-      security: (
-        <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />
-      ),
+      // security: (
+      //   <FormattedMessage id="app.settings.menuMap.security" defaultMessage="Security Settings" />
+      // ),
     };
     const key = location.pathname.replace(`${match.path}/`, '');
     this.state = {
@@ -59,6 +59,7 @@ class Info extends Component {
   };
 
   selectKey = ({ key }) => {
+    console.log(key, 'key')
     router.push(`/account/settings/${key}`);
     this.setState({
       selectKey: key,
@@ -84,12 +85,14 @@ class Info extends Component {
     });
   };
 
+  /* eslint-disable no-underscore-dangle */
   render() {
     const { children, currentUser } = this.props;
-    if (!currentUser.userid) {
+    if (!currentUser._id) {
       return '';
     }
     const { mode, selectKey } = this.state;
+    console.log(selectKey, 'aa')
     return (
       <GridContent>
         <div

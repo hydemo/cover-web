@@ -28,17 +28,21 @@ class BaseTable extends PureComponent {
       width: '200px',
       render: (text, record) => (
         <div>
-          {update ? <a onClick={() => this.setState({ modalVisible: true, type: 'edit', record })}>修改</a> : ''}
+          {update ?
+            <a onClick={() => this.setState({ modalVisible: true, type: 'edit', record })}>
+              修改
+              <Divider type="vertical" />
+            </a> : ''}
           {remove ?
             <Popconfirm title="确定删除？" onConfirm={() => this.handleDelete(record)}>
-              <Divider type="vertical" />
               <a>删除</a>
+              <Divider type="vertical" />
             </Popconfirm> : ''}
-          {ExtendAction ? <span><Divider type="vertical" /><ExtendAction record={record} /></span> : ''}
+          {ExtendAction ? <span><ExtendAction record={record} /></span> : ''}
         </div>
       ),
     }
-    if (update || remove) {
+    if (update || remove || ExtendAction) {
       columns.push(action)
     }
     this.fetch()
@@ -149,7 +153,6 @@ class BaseTable extends PureComponent {
       add = true,
       ...rest
     } = this.props;
-    console.log(this.props)
     const { modalVisible, type, record } = this.state;
     const { pagination } = data;
 

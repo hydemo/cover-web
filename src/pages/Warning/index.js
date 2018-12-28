@@ -21,6 +21,9 @@ const FormItem = Form.Item;
 const nameSpace = "warning";
 
 const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电池电量不足' }
+const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
+const authority = JSON.parse(localStorage.getItem('cover-authority'))
+const role = roleType[authority[0]]
 /* eslint-disable no-underscore-dangle */
 @connect((state) => ({
   result: state[`${nameSpace}`],
@@ -82,6 +85,9 @@ class TableList extends PureComponent {
       render: (text, record) => record.isHandle ? '是' : '否'
 
     },
+  ]
+
+  actionText =
     {
       title: '操作',
       width: 200,
@@ -105,10 +111,14 @@ class TableList extends PureComponent {
           }
 
         </div>
-    },
-  ];
+
+    };
+
 
   componentDidMount() {
+    if (role && role < 3) {
+      this.columns.push(this.actionText)
+    }
     this.fetch()
   }
 
@@ -250,10 +260,7 @@ class TableList extends PureComponent {
 
   render() {
     const { modalVisble } = this.state;
-    console.log(modalVisble, '1')
     const { result: { data } = {}, loading } = this.props;
-    console.log(this.props, '3')
-    console.log(data, '2')
     const { pagination } = data;
     const rowSelection = {
       type: 'radio',

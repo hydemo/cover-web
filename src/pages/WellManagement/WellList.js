@@ -26,7 +26,7 @@ const nameSpace = "wellList"
 
 const FormItem = Form.Item;
 
-const roleType = { superAdmin: 0, Admin: 1, Operation: 2, User: 3 }
+const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
 const authority = JSON.parse(localStorage.getItem('cover-authority'))
 const role = roleType[authority[0]]
 
@@ -111,14 +111,6 @@ const CreateForm = Form.create()(props => {
           form.getFieldDecorator('tatalTariff', {
             rules: [{ required: false, message: '请输入累计资费' }],
             initialValue: record.tatalTariff,
-          })(<Input placeholder="请输入" />)
-        }
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
-        {
-          form.getFieldDecorator('status', {
-            rules: [{ required: false, message: '请输入状态' }],
-            initialValue: record.status,
           })(<Input placeholder="请输入" />)
         }
       </FormItem>
@@ -230,7 +222,7 @@ class TableList extends PureComponent {
   }
 
   ExtendAction = (props) => (
-    role && role < 1 ?
+    role && role < 2 ?
       <Dropdown
         overlay={
           <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
@@ -319,9 +311,9 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            add={role && role < 1}
-            update={role && role < 1}
-            remove={role && role < 1}
+            add={role && role < 2}
+            update={role && role < 2}
+            remove={role && role < 2}
             formValues={formValues}
             columns={this.columns}
             CreateForm={CreateForm}
