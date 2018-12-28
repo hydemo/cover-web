@@ -1,9 +1,10 @@
-import { getAllWell, getWellOpen,getWellLeak} from '@/services/monitor';
+import { getAllWell, getWellOpen,getWellLeak,getWellBattery,getWarnsCount} from '@/services/monitor';
 
 export default {
   namespace: 'monitor',
 
   state: {
+    counts:{}
     // tags: [],
   },
 
@@ -23,14 +24,26 @@ export default {
       const response = yield call(getWellLeak);
     if(callBack) callBack(response);
     },
+    *getWellBattery({callBack}, { call }) {
+      const response = yield call(getWellBattery);
+    if(callBack) callBack(response);
+    },
+    *getWarnsCount({callBack}, { call,put }) {
+      const response = yield call(getWarnsCount);
+      yield put({
+        type: 'setCounts',
+        payload: response,
+      });
+    if(callBack) callBack(response);
+    },
   },
 
   reducers: {
-    // saveTags(state, action) {
-    //   return {
-    //     ...state,
-    //     tags: action.payload,
-    //   };
-    // },
+    setCounts(state, action) {
+      return {
+        ...state,
+        counts: action.payload,
+      };
+    },
   },
 };

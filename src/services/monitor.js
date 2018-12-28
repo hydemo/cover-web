@@ -28,6 +28,20 @@ export async function getWellLeak() {
   });
 }
 
+export async function getWellBattery() {
+  return axios({
+    url: '/wells/battery',
+    method: 'GET',
+  });
+}
+
+
+export async function getWarnsCount() {
+  return axios({
+    url: '/wells/counts',
+    method: 'GET',
+  });
+}
 // export async function queryCurrent() {
 //   return axios({
 //     url: '/api/currentUser',
