@@ -1,32 +1,32 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Form, Input, Upload, Select, Button } from 'antd';
+import { Form, Input, Upload, Button } from 'antd';
 import { connect } from 'dva';
 import cookies from 'js-cookie';
 import styles from './BaseView.less';
 import { baseURL } from '@/utils/config';
 // import { getTimeDistance } from '@/utils/utils';
-
+/* eslint-disable no-underscore-dangle */
 const token = cookies.get('access_token');
 const FormItem = Form.Item;
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }) => (
-  <Fragment>
-    <div className={styles.avatar_title}>
-      <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload fileList={[]} action={`${baseURL}/user/upload`} headers={{ Authorization: `Bearer ${token}` }}>
-      <div className={styles.button_view}>
-        <Button icon="upload">
-          <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-        </Button>
-      </div>
-    </Upload>
-  </Fragment>
-);
+// const AvatarView = ({ avatar }) => (
+//   <Fragment>
+//     <div className={styles.avatar_title}>
+//       <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
+//     </div>
+//     <div className={styles.avatar}>
+//       <img src={avatar} alt="avatar" />
+//     </div>
+//     <Upload fileList={[]} action={`${baseURL}/user/upload`} headers={{ Authorization: `Bearer ${token}` }}>
+//       <div className={styles.button_view}>
+//         <Button icon="upload">
+//           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+//         </Button>
+//       </div>
+//     </Upload>
+//   </Fragment>
+// );
 
 @connect(({ user }) => ({
   currentUser: user.currentUser,
@@ -60,18 +60,18 @@ class BaseView extends Component {
   };
 
   handleSubmit = () => {
-    const { dispatch, form } = this.props;
+    const { dispatch, form, currentUser } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
-      form.resetFields();
       dispatch({
-        type: `user/add`,
-        payload: values,
+        type: `accountmanagement/update`,
+        payload: { data: values, id: currentUser._id },
         callback: () => {
-          this.fetch()
+          dispatch({
+            type: 'user/fetchCurrent',
+          });
         }
       });
-      this.handleModalVisible();
     });
   };
 
@@ -82,7 +82,7 @@ class BaseView extends Component {
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form layout="vertical" onSubmit={this.handleSubmit} hideRequiredMark>
+          <Form layout="vertical" hideRequiredMark>
             <FormItem label={formatMessage({ id: 'app.settings.basic.email' })}>
               {getFieldDecorator('email', {
                 rules: [
@@ -103,7 +103,7 @@ class BaseView extends Component {
                 ],
               })(<Input />)}
             </FormItem>
-            <Button type="primary">
+            <Button type="primary" onClick={() => this.handleSubmit()}>
               <FormattedMessage
                 id="app.settings.basic.update"
                 defaultMessage="Update Information"

@@ -92,7 +92,6 @@ class Info extends Component {
       return '';
     }
     const { mode, selectKey } = this.state;
-    console.log(selectKey, 'aa')
     return (
       <GridContent>
         <div
