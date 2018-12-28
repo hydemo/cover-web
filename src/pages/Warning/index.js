@@ -6,37 +6,22 @@ import {
   Card,
   Form,
   Input,
-  Select,
   Button,
+  Table,
+  Modal,
+  Divider,
+  Popconfirm,
 } from 'antd';
-
-import BaseTable from '@/components/BaseTable';
+import AccountTable from '@/pages/AccountManagement'
 
 import styles from './Index.less';
 
-const nameSpace = "warning"
-
 const FormItem = Form.Item;
-const { Option } = Select;
-const role = ['超级管理员', '管理员', '运维', '普通用户'];
 
-const CreateForm = Form.create()(props => {
-  const { form } = props;
-  return (
-    <FormItem
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 15 }}
-      label="描述"
-    >
-      {
-        form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)
-      }
-    </FormItem>)
-});
+const nameSpace = "warning";
 
-/* eslint react/no-multi-comp:0 */
+const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电池电量不足' }
+/* eslint-disable no-underscore-dangle */
 @connect((state) => ({
   result: state[`${nameSpace}`],
   loading: state.loading.effects[`${nameSpace}/fetch`],
@@ -47,44 +32,128 @@ class TableList extends PureComponent {
     formValues: {},
   };
 
+
+
   columns = [
     {
-      title: '姓名',
-      dataIndex: 'name',
+      title: '异常类型',
+      dataIndex: 'warningType',
+      key: 'warningType',
+      render: (text, record) => type[record.warningType],
+
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
-    },
-    {
-      title: '权限',
-      dataIndex: 'role',
-      // filters: [
-      //   {
-      //     text: role[0],
-      //     value: 0,
-      //   },
-      //   {
-      //     text: role[1],
-      //     value: 1,
-      //   },
-      //   {
-      //     text: role[2],
-      //     value: 2,
-      //   },
-      //   {
-      //     text: role[3],
-      //     value: 3,
-      //   },
-      // ],
-      render(val) {
-        console.log(role, val)
-        return <div>{role[val]}</div>;
+      title: '电池电量',
+      dataIndex: 'batteryLevel',
+      key: 'batteryLevel',
+      render: (text, record) => {
+        if (record.batteryLevel < 20) {
+          return <div style={{ color: 'red' }}>{record.batteryLevel}</div>;
+        }
+        return record.batteryLevel;
       },
+    },
+    {
+      title: '井盖是否打开',
+      dataIndex: 'coverIsOpen',
+      key: 'coverIsOpen',
+      render: (text, record) => {
+        if (record.coverIsOpen) {
+          return <div style={{ color: 'red' }}>打开</div>;
+        }
+        return '关闭';
+      },
+
+    }, {
+      title: '是否泄气',
+      dataIndex: 'gasLeak',
+      key: 'gasLeak',
+      render: (text, record) => {
+        if (record.gasLeak) {
+          return <div style={{ color: 'red' }}>漏气</div>;
+        }
+        return '未漏气';
+      },
+    },
+    {
+      title: '是否分配',
+      dataIndex: 'isHandle',
+      key: 'isHandle',
+      render: (text, record) => record.isHandle ? '是' : '否'
+
+    },
+    {
+      title: '操作',
+      width: 200,
+      key: 'action',
+      render: (text, record) =>
+        <div>
+          {record.isHandle ?
+            <div>
+              <span style={{ color: '#A9A9A9' }}>接警</span>
+              <Divider type="vertical" />
+              <span style={{ color: '#A9A9A9' }}>撤警</span>
+            </div>
+            :
+            <div>
+              <a onClick={() => this.setState({ modalVisble: true, record })}>接警</a>
+              <Divider type="vertical" />
+              <Popconfirm title="确定撤警？" onConfirm={() => this.cancelWarning(record)}>
+                <a>撤警</a>
+              </Popconfirm>
+            </div>
+          }
+
+        </div>
     },
   ];
 
+  componentDidMount() {
+    this.fetch()
+  }
 
+  cancelWarning = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/cancel`,
+      payload: { id: record._id },
+      callback: () => {
+        this.fetch()
+      }
+    });
+  }
+
+  fetch = () => {
+    const { result: { data }, dispatch } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/fetch`,
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
+    });
+  }
+
+  handleTableChange = (newPagination) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        current: newPagination.current,
+        pageSize: newPagination.pageSize,
+      },
+      callback: () => {
+        dispatch({
+          type: `${nameSpace}/fetch`,
+          payload: {
+            offset: newPagination.current,
+            limit: newPagination.pageSize,
+          }
+        });
+      },
+    })
+  }
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -121,6 +190,24 @@ class TableList extends PureComponent {
     });
   };
 
+  onRowSelect = (record) => {
+    this.setState({ user: record })
+  }
+
+
+  handleOk = () => {
+    const { record, user } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/bind`,
+      payload: { id: record._id, userId: user._id },
+      callback: () => {
+        this.fetch()
+      }
+    });
+    this.setState({ modalVisble: false })
+  }
+
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -134,13 +221,13 @@ class TableList extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="权限搜索">
+            {/* <FormItem label="权限搜索">
               {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {role.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
                 </Select>
               )}
-            </FormItem>
+            </FormItem> */}
           </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
@@ -157,25 +244,41 @@ class TableList extends PureComponent {
     );
   }
 
-
-
   renderForm() {
     return this.renderSimpleForm();
   }
 
   render() {
-    const { formValues } = this.state;
+    const { modalVisble } = this.state;
+    console.log(modalVisble, '1')
+    const { result: { data } = {}, loading } = this.props;
+    console.log(this.props, '3')
+    console.log(data, '2')
+    const { pagination } = data;
+    const rowSelection = {
+      type: 'radio',
+      onSelect: (record) => this.onRowSelect(record),
+    }
     return (
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
-          <BaseTable
-            {...this.props}
-            formValues={formValues}
+          <Table
+            loading={loading}
+            dataSource={data.list}
+            pagination={pagination}
             columns={this.columns}
-            CreateForm={CreateForm}
-            nameSpace={nameSpace}
+            onChange={this.handleTableChange}
           />
+          <Modal
+            title="分配人员"
+            visible={modalVisble}
+            onOk={this.handleOk}
+            onCancel={() => this.setState({ modalVisble: false })}
+            width="1000px"
+          >
+            <AccountTable add={false} update={false} remove={false} rowSelection={rowSelection} />
+          </Modal>
         </div>
       </Card>
     );

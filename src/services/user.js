@@ -9,7 +9,7 @@ import axios from '@/utils/request';
 
 export async function queryCurrent() {
   return axios({
-    url: '/api/currentUser',
+    url: '/user/me',
     method: 'GET',
   });
 }
@@ -18,12 +18,7 @@ export async function addUser(query) {
   return axios({
     url: '/user',
     method: 'POST',
-    data: {
-      name: query.name,
-      password: query.password,
-      email: query.email,
-      role: query.role,
-    },
+    data: query,
   });
 }
 
@@ -39,11 +34,7 @@ export async function updateUser(query) {
   return axios({
     url: `/user/${query.id}`,
     method: 'PUT',
-    data: {
-      name: query.name,
-      email: query.email,
-      role: query.role,
-    },
+    data: query.data,
   });
 }
 

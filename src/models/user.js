@@ -1,5 +1,8 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
+import { setAuthority } from '@/utils/authority';
+import { reloadAuthorized } from '@/utils/Authorized';
 
+const role = ['superAdmin', 'Admin', 'Operation', 'User']
 export default {
   namespace: 'user',
 
@@ -13,15 +16,21 @@ export default {
       const response = yield call(queryUsers);
       yield put({
         type: 'save',
-        payload: response,
+        payload: { response, currentAuthority: role[response.data.role] },
       });
     },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ callback }, { call, put }) {
       const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      if (response) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: { response, currentAuthority: role[response.data.role] },
+        });
+        reloadAuthorized();
+        if (callback) callback()
+      }
+
+
     },
   },
 
@@ -32,19 +41,20 @@ export default {
         list: action.payload,
       };
     },
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload }) {
+      setAuthority(payload.currentAuthority);
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: payload.response.data || {},
       };
     },
-    changeNotifyCount(state, action) {
+    changeNotifyCount(state, { payload }) {
       return {
         ...state,
         currentUser: {
           ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
+          notifyCount: payload.totalCount,
+          unreadCount: payload.unreadCount,
         },
       };
     },

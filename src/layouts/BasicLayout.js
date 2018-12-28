@@ -64,14 +64,17 @@ class BasicLayout extends React.PureComponent {
     } = this.props;
     dispatch({
       type: 'user/fetchCurrent',
+      callback: () => {
+        dispatch({
+          type: 'setting/getSetting',
+        });
+        dispatch({
+          type: 'menu/getMenuData',
+          payload: { routes, authority },
+        });
+      }
     });
-    dispatch({
-      type: 'setting/getSetting',
-    });
-    dispatch({
-      type: 'menu/getMenuData',
-      payload: { routes, authority },
-    });
+
   }
 
   componentDidUpdate(preProps) {
@@ -116,14 +119,14 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return '智能窨井管理系统';
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
 
-    return `${pageName} - Ant Design Pro`;
+    return `${pageName} - 智能窨井管理系统`;
   };
 
   getLayoutStyle = () => {

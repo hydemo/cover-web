@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import {
   Form,
   Button,
@@ -10,10 +10,7 @@ import {
 } from 'antd';
 
 
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
+
 /* eslint react/no-multi-comp:0 */
 @Form.create()
 class BaseTable extends PureComponent {
@@ -24,56 +21,60 @@ class BaseTable extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch, columns, update = true, remove = true, ExtendAction, nameSpace } = this.props;
-    console.log(nameSpace, 'vaaaa')
+    const { columns, update = true, remove = true, ExtendAction } = this.props;
     const action =
     {
       title: '操作',
-      width: '180px',
+      width: '200px',
       render: (text, record) => (
         <div>
           {update ? <a onClick={() => this.setState({ modalVisible: true, type: 'edit', record })}>修改</a> : ''}
           {remove ?
-            <Popconfirm title="确定删除？" onConfirm={this.handleDelete}>
+            <Popconfirm title="确定删除？" onConfirm={() => this.handleDelete(record)}>
               <Divider type="vertical" />
               <a>删除</a>
             </Popconfirm> : ''}
-          {ExtendAction ? <div><Divider type="vertical" /><ExtendAction /></div> : ''}
+          {ExtendAction ? <span><Divider type="vertical" /><ExtendAction record={record} /></span> : ''}
         </div>
       ),
     }
     if (update || remove) {
       columns.push(action)
     }
+    this.fetch()
+  }
+
+  fetch = () => {
+    const { result: { data }, dispatch, nameSpace } = this.props;
+    const { pagination } = data;
     dispatch({
       type: `${nameSpace}/fetch`,
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   }
 
-  handleTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch, formValues, nameSpace } = this.props;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
+  handleTableChange = (newPagination) => {
+    const { dispatch, nameSpace } = this.props;
     dispatch({
-      type: `${nameSpace}/fetch`,
-      payload: params,
-    });
-  };
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        current: newPagination.current,
+        pageSize: newPagination.pageSize,
+      },
+      callback: () => {
+        dispatch({
+          type: `${nameSpace}/fetch`,
+          payload: {
+            offset: newPagination.current,
+            limit: newPagination.pageSize,
+          }
+        });
+      }
+    })
+  }
 
   handleModalVisible = flag => {
     this.setState({
@@ -88,9 +89,10 @@ class BaseTable extends PureComponent {
       form.resetFields();
       dispatch({
         type: `${nameSpace}/add`,
-        payload: {
-          values,
-        },
+        payload: values,
+        callback: () => {
+          this.fetch()
+        }
       });
       message.success('添加成功');
       this.handleModalVisible();
@@ -110,9 +112,12 @@ class BaseTable extends PureComponent {
           id: _id,
           data: values,
         },
+        callback: () => {
+          this.fetch()
+        }
       });
       message.success('编辑成功');
-      this.handleUpdateModalVisible();
+      this.handleModalVisible();
     });
   };
 
@@ -124,32 +129,32 @@ class BaseTable extends PureComponent {
       payload: {
         id: _id,
       },
+      callback: () => {
+        this.fetch()
+      }
     });
     message.success('删除成功');
-    this.handleUpdateModalVisible();
+    this.handleModalVisible();
   }
 
   render() {
+    console.log(this.props)
     const {
-      result: { data },
+      result: { data = {} } = {},
       loading,
       rowSelection,
       CreateForm,
       columns,
       form,
       add = true,
+      ...rest
     } = this.props;
-    const paginationProps = {
-      showSizeChanger: true,
-      showQuickJumper: true,
-      current: 1,
-      pageSize: 10,
-      total: data.total,
-    };
-    const { modalVisible, type } = this.state;
+    console.log(this.props)
+    const { modalVisible, type, record } = this.state;
+    const { pagination } = data;
 
     return (
-      <div>
+      <Fragment>
         {add ?
           <Button icon="plus" type="primary" style={{ marginBottom: 16 }} onClick={() => this.handleModalVisible(true)}>
             新建
@@ -158,20 +163,22 @@ class BaseTable extends PureComponent {
           loading={loading}
           rowSelection={rowSelection}
           dataSource={data.list}
-          pagination={paginationProps}
+          pagination={pagination}
           columns={columns}
           onChange={this.handleTableChange}
+          {...rest}
         />
         <Modal
           destroyOnClose
+          afterClose={() => this.setState({ type: 'add', record: {} })}
           title={type === 'add' ? "新增" : "修改"}
           visible={modalVisible}
           onOk={type === 'add' ? this.handleAdd : this.handleUpdate}
           onCancel={() => this.handleModalVisible()}
         >
-          <CreateForm form={form} />
+          <CreateForm form={form} record={record} />
         </Modal>
-      </div>
+      </Fragment>
     );
   }
 }

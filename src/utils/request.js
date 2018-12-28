@@ -9,12 +9,12 @@ const codeMessage = {
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
   204: '删除数据成功。',
-  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
-  403: '用户得到授权，但是访问是被禁止的。',
+  400: '发出的请求有错误，请检查输入参数。',
+  401: '登录已过期。',
+  403: '无访问权限。',
   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
   406: '请求的格式不可得。',
-  410: '请求的资源被永久删除，且不会再得到的。',
+  410: '请求数据不存在。',
   422: '当创建一个对象时，发生一个验证错误。',
   500: '服务器发生错误，请检查服务器。',
   502: '网关错误。',
@@ -50,20 +50,28 @@ export default function request(options) {
     return params;
   });
 
-  axiosReq.interceptors.response.use((response) => {
+  axiosReq.interceptors.response.use(response => {
     if (response.status >= 200 && response.status < 300) {
       return response.data;
     }
-    const errortext = codeMessage[response.status] || response.statusText;
+    return null;
+  }, (e) => {
+    const { response } = e
+    let code;
+    if (response.data.statusCode && response.data.statusCode > 10000) {
+      code = true
+    };
+
+    const errortext = code ? response.data.message : codeMessage[response.status];
     notification.error({
-      message: `请求错误 ${response.status}: ${response.url}`,
+      message: `请求错误 ${response.status}`,
       description: errortext,
+      duration: 2,
     });
     const error = new Error(errortext);
     error.name = response.status;
     error.response = response;
-    throw error;
-  }, (error) => {
+    error.code = code;
     throw error
   });
 
@@ -73,9 +81,12 @@ export default function request(options) {
       if (status === 401) {
         // @HACK
         /* eslint-disable no-underscore-dangle */
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        });
+        setTimeout(() => {
+          window.g_app._store.dispatch({
+            type: 'login/logout',
+          });
+        }, 2000);
+
         return;
       }
       // environment should not be used
@@ -87,8 +98,9 @@ export default function request(options) {
         router.push('/exception/500');
         return;
       }
+      if (e.code) return;
       if (status >= 404 && status < 422) {
-        router.push('/exception/404');
+        // router.push('/exception/404');
       }
     });
 }

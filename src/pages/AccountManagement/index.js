@@ -8,8 +8,9 @@ import {
   Input,
   Select,
   Button,
+  Modal
 } from 'antd';
-
+/* eslint-disable no-underscore-dangle */
 import BaseTable from '@/components/BaseTable';
 
 import styles from './Index.less';
@@ -21,20 +22,40 @@ const { Option } = Select;
 const role = ['超级管理员', '管理员', '运维', '普通用户'];
 
 const CreateForm = Form.create()(props => {
-  const { form } = props;
+  const { form, record } = props;
   return (
-    <FormItem
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 15 }}
-      label="描述"
-    >
-      {
-        form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)
-      }
-    </FormItem>)
-});
+    <div>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+        {
+          form.getFieldDecorator('name', {
+            rules: [{ required: true, message: '请输入姓名' }],
+            initialValue: record.name,
+          })(<Input placeholder="请输入" />)
+        }
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮箱">
+        {
+          form.getFieldDecorator('email', {
+            rules: [{ required: true, message: '请输入邮箱' }],
+            initialValue: record.email,
+          })(<Input placeholder="请输入" />)
+        }
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="权限">
+        {
+          form.getFieldDecorator('role', {
+            rules: [{ required: true, message: '请选择权限' }],
+            initialValue: record.role,
+          })(
+            <Select placeholder="请选择" style={{ width: '100%' }}>
+              {role.map((r, key) => <Option value={key}>{r}</Option>)}
+            </Select>
+          )
+        }
+      </FormItem>
+    </div>
+  );
+})
 
 /* eslint react/no-multi-comp:0 */
 @connect((state) => ({
@@ -45,6 +66,7 @@ const CreateForm = Form.create()(props => {
 class TableList extends PureComponent {
   state = {
     formValues: {},
+    record: {},
   };
 
   columns = [
@@ -59,32 +81,11 @@ class TableList extends PureComponent {
     {
       title: '权限',
       dataIndex: 'role',
-      // filters: [
-      //   {
-      //     text: role[0],
-      //     value: 0,
-      //   },
-      //   {
-      //     text: role[1],
-      //     value: 1,
-      //   },
-      //   {
-      //     text: role[2],
-      //     value: 2,
-      //   },
-      //   {
-      //     text: role[3],
-      //     value: 3,
-      //   },
-      // ],
       render(val) {
-        console.log(role, val)
         return <div>{role[val]}</div>;
       },
     },
   ];
-
-
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -120,6 +121,29 @@ class TableList extends PureComponent {
       });
     });
   };
+
+  onPasswordChange = e => {
+    this.setState({ password: e.target.value })
+  }
+
+  onPasswordReset = () => {
+    const { dispatch } = this.props
+    const { record, password } = this.state
+    dispatch({
+      type: `${nameSpace}/password`,
+      payload: {
+        id: record._id,
+        password,
+      },
+    });
+    this.setState({ modalVisble: false })
+  }
+
+  ExtendAction = (props) => {
+    const { record } = props
+    return (<a onClick={() => this.setState({ record, modalVisble: true })}> 修改密码</a>)
+  }
+
 
   renderSimpleForm() {
     const {
@@ -164,7 +188,7 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const { formValues } = this.state;
+    const { formValues, modalVisble } = this.state;
     return (
       <Card bordered={false}>
         <div className={styles.tableList}>
@@ -175,8 +199,19 @@ class TableList extends PureComponent {
             columns={this.columns}
             CreateForm={CreateForm}
             nameSpace={nameSpace}
+            ExtendAction={this.ExtendAction}
           />
         </div>
+        <Modal
+          title="修改密码"
+          visible={modalVisble}
+          onOk={this.onPasswordReset}
+          onCancel={() => this.setState({ modalVisble: false })}
+        >
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
+            <Input onChange={this.onPasswordChange} placeholder="请输入" />
+          </FormItem>
+        </Modal>
       </Card>
     );
   }

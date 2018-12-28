@@ -1,13 +1,11 @@
 export default [
   // user
   {
-    path: '/user',
+    path: '/login',
     component: '../layouts/UserLayout',
     routes: [
-      { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login' },
-      { path: '/user/register', component: './User/Register' },
-      { path: '/user/register-result', component: './User/RegisterResult' },
+      { path: '/login', redirect: '/login/page' },
+      { path: '/login/page', component: './User/Login' },
     ],
   },
   // app
@@ -15,7 +13,7 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authority: ['superAdmin', 'Admin', 'Operation', 'User'],
     routes: [
       // dashboard
       { path: '/', redirect: '/monitor' },
@@ -27,30 +25,50 @@ export default [
       },
       // forms
       {
-        path: '/list',
-        icon: 'table',
-        name: 'list',
+        path: '/wellmanagement',
+        icon: 'sliders',
+        name: 'wellmanagement',
         routes: [
-          { path: '/list', redirect: '/list/well-list' },
+          { path: '/wellmanagement', redirect: '/wellmanagement/welllist' },
           {
-            path: '/list/well-list',
-            name: 'wellList',
-            component: './List/WellList',
+            path: '/wellmanagement/welllist',
+            name: 'welllist',
+            component: './WellManagement/WellList',
           },
           {
-            path: '/list/owner-list',
-            name: 'ownerList',
-            component: './List/OwnerList',
+            path: '/wellmanagement/ownerlist',
+            name: 'ownerlist',
+            component: './WellManagement/OwnerList',
           },
           {
-            path: '/list/sim-list',
-            name: 'simList',
-            component: './List/SimList',
+            path: '/wellmanagement/wellprofile',
+            name: 'wellprofile',
+            hideInMenu: true,
+            component: './WellManagement/WellProfile',
+          },
+        ],
+      },
+      {
+        path: '/devicemanagement',
+        icon: 'sliders',
+        name: 'devicemanagement',
+        routes: [
+          { path: '/devicemanagement', redirect: '/devicemanagement/devicelist' },
+          {
+            path: '/devicemanagement/devicelist',
+            name: 'devicelist',
+            component: './DeviceManagement/DeviceList',
           },
           {
-            path: '/list/device-list',
-            name: 'deviceList',
-            component: './List/DeviceList',
+            path: '/devicemanagement/simlist',
+            name: 'simlist',
+            component: './DeviceManagement/SimList',
+          },
+          {
+            path: '/devicemanagement/deviceprofile',
+            name: 'deviceprofile',
+            hideInMenu: true,
+            component: './DeviceManagement/DeviceProfile',
           },
         ],
       },
@@ -68,9 +86,17 @@ export default [
         component: './Maintenance',
       },
       {
+        path: '/maintenance/maintenanceprofile',
+        name: 'maintenanceprofile',
+        hideInMenu: true,
+        component: './Maintenance/MaintenanceProfile',
+
+      },
+      {
         path: '/accountmanagement',
         icon: 'user',
         name: 'accountmanagement',
+        authority: ['superAdmin'],
         component: './AccountManagement',
       },
 
