@@ -51,10 +51,23 @@ class Monitor extends PureComponent {
       wellData: {}
     };
     this.timer=null;
+    this.monitorChart=null;
+    this.resize.bind(this);
   }
 
 
+
+  // window.onresize = null;
   componentDidMount() {
+   
+
+    this.screenChange();
+
+   setTimeout(()=>
+   {const chartHeight= this.monitorChart.clientHeight;
+    console.log(chartHeight,'chartHeight')
+     this.setState({chartHeight})},10)
+   
     this.fetchCounts();
     this.timer= setInterval(()=>this.fetchCounts(),1000*60*2);
     const { AMap } = window;
@@ -89,7 +102,7 @@ class Monitor extends PureComponent {
     });
 
     AMap.event.addListener(this.massMarks, 'click', (e) => {
-      const title = `窑井编号:<span style="font-size:11px;color:#F00;">${e.data.wellSN}</span>`;
+      const title = `窨井编号:<span style="font-size:11px;color:#F00;">${e.data.wellSN}</span>`;
       const content = [];
       const infoWindow = new AMap.InfoWindow({
         isCustom: true, // 使用自定义窗体
@@ -107,7 +120,24 @@ class Monitor extends PureComponent {
     if(this.timer){
       clearInterval(this.timer)
     }
+
+    
+      
+  window.removeEventListener('resize',this.resize);
+
   }
+
+
+  resize=()=>{
+    // console.log(this.state.chartHeight,'resizexxxxxxxxxxx')
+   
+     setTimeout(()=>{
+      const chartHeight= this.monitorChart.clientHeight;
+      console.log(chartHeight,'chartHeight')
+       this.setState({chartHeight})
+     },1000)
+  }
+
   // 构建自定义信息窗体
   createInfoWindow=(title, content) => {
     const info = document.createElement('div');
@@ -144,6 +174,8 @@ class Monitor extends PureComponent {
      this.map.clearInfoWindow();
    }
 
+   screenChange=() =>{
+    window.addEventListener('resize', this.resize);}
 
    getWarnType=(status)=>{
       if(status){
@@ -289,7 +321,7 @@ class Monitor extends PureComponent {
                   </div>
 
 
-                  <div className={styles.header}>
+                  <div className={styles.headerright}>
                     <img src={wellGreen} alt="" style={{ width: 20, height: 20 }} />
                     <div style={{ width: 10 }} />
                     正常
@@ -318,7 +350,7 @@ class Monitor extends PureComponent {
           </Col>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
             <Card
-              title="窑井基本状态"
+              title="窨井基本状态"
               style={{ marginBottom: 24 }}
               bordered={false}
             >
@@ -362,12 +394,18 @@ class Monitor extends PureComponent {
                   height={161}
                   title="电池电量"
                   percent={(batteryLevel / 255 * 100).toFixed(0)}
+                  style={{color: 'red'}}
                 />
               </div>
-              <div className={styles.status}>
+              <div
+                className={styles.status}
+                ref={(node) =>{ this.monitorChart = node}}
+              >
 
-                {gasLeak ? <img className={styles.chart} src={leakWarn} alt='' /> : <img src={unleak} alt='' />}
-                {coverIsOpen ? <img  className={styles.chart} src={coveropen} alt='' /> : <img src={coverok} alt='' />}
+                {gasLeak ? <img className={styles.chart} src={leakWarn} alt='' /> :
+                <img src={unleak} className={styles.chart} alt='' />}
+                {coverIsOpen ? <img className={styles.chart} src={coveropen} alt='' /> : 
+                <img src={coverok} className={styles.chart} alt='' />}
               </div>
             </Card>
           </Col>
@@ -380,7 +418,7 @@ class Monitor extends PureComponent {
               bordered={false}
               className={styles.pieCard}
             >
-              <Data nameSpace='' />
+              <Data chartType='battery' id={this.state.wellData? this.state.wellData._id:''} />
             </Card>
           </Col>
           <Col xl={12} lg={24} sm={24} xs={24} style={{ marginBottom: 24 }}>

@@ -1,4 +1,4 @@
-import { getAllWell, getWellOpen,getWellLeak,getWellBattery,getWarnsCount} from '@/services/monitor';
+import { getAllWell, getWellOpen,getWellLeak,getWellBattery,getWarnsCount,getHistory} from '@/services/monitor';
 
 export default {
   namespace: 'monitor',
@@ -35,6 +35,11 @@ export default {
         payload: response,
       });
     if(callBack) callBack(response);
+    },
+    *getHistory({payload,callBack}, { call }) {
+      console.log(payload,'payload')
+      const response = yield call(getHistory,payload);
+     if(callBack) callBack(response);
     },
   },
 

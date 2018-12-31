@@ -44,6 +44,8 @@ class WaterWave extends PureComponent {
     if (this.root) {
       const { height } = this.props;
       const { offsetWidth } = this.root.parentNode;
+      console.log(this.root,'roott')
+      console.log(offsetWidth,'offsetWidth')
       this.setState({
         radio: offsetWidth < height ? offsetWidth / height : 1,
       });

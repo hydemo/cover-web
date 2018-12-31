@@ -1,8 +1,15 @@
 import ReactEcharts from 'echarts-for-react';
 import 'echarts/theme/macarons';
 import React, { Component } from 'react';
+import { connect } from 'dva';
 
-export default class chart extends Component {
+const nameSpace = "monitor"
+@connect(({ monitor, loading }) => ({
+  monitor,
+  loading: loading.models.monitor,
+}))
+
+class Chart extends Component {
   data = () => {
     const d = [];
     let len = 0;
@@ -16,6 +23,29 @@ export default class chart extends Component {
     }
     return d;
   }
+
+componentDidMount(){
+  this.fetchHistotyData();
+}
+
+
+fetchHistotyData = () => {
+  const {id,chartType,dispatch} =this.props;
+  if(chartType&&id){
+    dispatch({
+      type: `${nameSpace}/getHistory`,
+      payload:  {
+          id,
+          limit:100000,
+          offset:1,
+          type:chartType
+        }
+     ,
+      callBack: (r) => {console.log(r)}
+    })
+  }
+}
+
 
   render() {
     const option = {
@@ -82,3 +112,5 @@ export default class chart extends Component {
     return (<ReactEcharts option={option} theme="macarons" />);
   }
 }
+
+export default Chart;
