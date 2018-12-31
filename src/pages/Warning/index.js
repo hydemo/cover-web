@@ -11,16 +11,18 @@ import {
   Modal,
   Divider,
   Popconfirm,
+  Select
 } from 'antd';
 import AccountTable from '@/pages/AccountManagement'
 
 import styles from './Index.less';
 
 const FormItem = Form.Item;
+const { Option } = Select;
 
 const nameSpace = "warning";
 
-const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电池电量不足' }
+const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电量不足' }
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
 const authority = JSON.parse(localStorage.getItem('cover-authority'))
 const role = roleType[authority[0]]
@@ -32,7 +34,6 @@ const role = roleType[authority[0]]
 @Form.create()
 class TableList extends PureComponent {
   state = {
-    formValues: {},
   };
 
 
@@ -141,12 +142,14 @@ class TableList extends PureComponent {
       payload: {
         offset: pagination.current,
         limit: pagination.pageSize,
+        search: pagination.search
       }
     });
   }
 
   handleTableChange = (newPagination) => {
-    const { dispatch } = this.props;
+    const { dispatch, result: { data } } = this.props;
+    const { pagination } = data;
     dispatch({
       type: `${nameSpace}/setPagination`,
       payload: {
@@ -159,6 +162,7 @@ class TableList extends PureComponent {
           payload: {
             offset: newPagination.current,
             limit: newPagination.pageSize,
+            search: pagination.search,
           }
         });
       },
@@ -168,12 +172,14 @@ class TableList extends PureComponent {
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    const { result: { data } } = this.props;
+    const { pagination } = data;
     dispatch({
       type: `${nameSpace}/fetch`,
-      payload: {},
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   };
 
@@ -188,14 +194,21 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
       dispatch({
         type: `${nameSpace}/fetch`,
-        payload: values,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
     });
   };
@@ -226,18 +239,51 @@ class TableList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+            <FormItem label="异常类型">
+              {getFieldDecorator('warningType')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="Open" key="Open">井盖打开</Option>
+                  <Option value="Leak" key="Leak">燃气泄漏</Option>
+                  <Option value="Battery" key="Battery">电量不足</Option>
+                </Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            {/* <FormItem label="权限搜索">
-              {getFieldDecorator('status')(
+            <FormItem label="电池电量">
+              {getFieldDecorator('batteryLevel')(<Input placeholder="" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="是否打开">
+              {getFieldDecorator('coverIsOpen')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {role.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
+                  <Option value={0} key={0}>关闭</Option>
+                  <Option value={1} key={1}>打开</Option>
                 </Select>
               )}
-            </FormItem> */}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="是否泄气">
+              {getFieldDecorator('gasLeak')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value={0} key={0}>漏气</Option>
+                  <Option value={1} key={1}>未漏气</Option>
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="是否分配">
+              {getFieldDecorator('isHandle')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value={0} key={0}>否</Option>
+                  <Option value={1} key={1}>是</Option>
+                </Select>
+              )}
+            </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>

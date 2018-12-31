@@ -31,6 +31,7 @@ align-items: center;
   display: block;
   width:50%;
   height: 50%;
+  max-width: 160px;
 }
 .header{
   // width: 100%;
@@ -92,5 +93,19 @@ align-items: center;
 .status{
 width: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-grow: 0;
+  justify-content: space-around;
+}
+
+.wave{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.wave>div{
+
+  width: 50%;
 }

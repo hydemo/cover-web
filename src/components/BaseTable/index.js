@@ -22,6 +22,7 @@ class BaseTable extends PureComponent {
 
   componentDidMount() {
     const { columns, update = true, remove = true, ExtendAction } = this.props;
+
     const action =
     {
       title: '操作',
@@ -56,12 +57,14 @@ class BaseTable extends PureComponent {
       payload: {
         offset: pagination.current,
         limit: pagination.pageSize,
+        search: pagination.search,
       }
     });
   }
 
   handleTableChange = (newPagination) => {
-    const { dispatch, nameSpace } = this.props;
+    const { dispatch, nameSpace, result: { data }, } = this.props;
+    const { pagination } = data;
     dispatch({
       type: `${nameSpace}/setPagination`,
       payload: {
@@ -74,6 +77,7 @@ class BaseTable extends PureComponent {
           payload: {
             offset: newPagination.current,
             limit: newPagination.pageSize,
+            search: pagination.search,
           }
         });
       }
@@ -142,7 +146,6 @@ class BaseTable extends PureComponent {
   }
 
   render() {
-    console.log(this.props)
     const {
       result: { data = {} } = {},
       loading,
@@ -179,7 +182,7 @@ class BaseTable extends PureComponent {
           onOk={type === 'add' ? this.handleAdd : this.handleUpdate}
           onCancel={() => this.handleModalVisible()}
         >
-          <CreateForm form={form} record={record} />
+          <CreateForm form={form} record={record} type={type} />
         </Modal>
       </Fragment>
     );

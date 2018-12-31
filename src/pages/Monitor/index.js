@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Row, Col, Card, Tooltip, Button,message } from 'antd';
+import { Row, Col, Card, Tooltip, Button, message } from 'antd';
 import { Pie, WaterWave, Gauge, TagCloud, MiniProgress } from '@/components/Charts';
 // import { MiniProgress } from '../../components/Charts/MiniProgress';
 // import NumberInfo from '@/components/NumberInfo';
@@ -69,7 +69,7 @@ class Monitor extends PureComponent {
      this.setState({chartHeight})},10)
    
     this.fetchCounts();
-    this.timer= setInterval(()=>this.fetchCounts(),1000*60*2);
+    this.timer = setInterval(() => this.fetchCounts(), 1000 * 60 * 2);
     const { AMap } = window;
     this.map = new AMap.Map('myMap', { zoom: 12 });
     const styleObjectArr = [
@@ -116,8 +116,8 @@ class Monitor extends PureComponent {
     this.show('getAllWell', 0)
   }
 
-  componentWillUnmount() { 
-    if(this.timer){
+  componentWillUnmount() {
+    if (this.timer) {
       clearInterval(this.timer)
     }
 
@@ -139,10 +139,10 @@ class Monitor extends PureComponent {
   }
 
   // 构建自定义信息窗体
-  createInfoWindow=(title, content) => {
+  createInfoWindow = (title, content) => {
     const info = document.createElement('div');
     info.className = 'custom-info input-card content-window-card';
- 
+
     // 可以通过下面的方式修改自定义窗体的宽高
     info.style.width = '150px';
     // 定义顶部标题
@@ -153,13 +153,13 @@ class Monitor extends PureComponent {
     titleD.innerHTML = title;
     closeX.src = 'https://webapi.amap.com/images/close2.gif';
     closeX.onclick = this.closeInfoWindow;
- 
+
     top.appendChild(titleD);
     top.appendChild(closeX);
     info.appendChild(top);
- 
-    
- 
+
+
+
     // 定义中部内容
     const nav = document.createElement('div');
     nav.className = 'info-seeCover';
@@ -217,10 +217,10 @@ class Monitor extends PureComponent {
             const endLngLat = this.state.wellLoc;
             driving.clear();
             driving.search(startLngLat, endLngLat, (status1, result1) => {
-              if(status1==="error"){
+              if (status1 === "error") {
                 message.error('无法定位您的位置！')
               }
-              console.log(result1, status1,'xxx');
+              console.log(result1, status1, 'xxx');
               this.closeInfoWindow();
             });
           });
@@ -238,7 +238,9 @@ class Monitor extends PureComponent {
     dispatch({
       type: `${nameSpace}/getWarnsCount`,
       payload: {},
-      callBack: () => {}})}
+      callBack: () => { }
+    })
+  }
 
 
   show = (action, IconStyle) => {
@@ -247,8 +249,8 @@ class Monitor extends PureComponent {
       type: `${nameSpace}/${action}`,
       payload: {},
       callBack: (r) => {
-        console.log(r,'rrrrrrrrrrrrrrr')
-        if(r){
+        console.log(r, 'rrrrrrrrrrrrrrr')
+        if (r) {
           const data = r;
           let CenterLng = 0;
           let CenterLat = 0;
@@ -256,12 +258,12 @@ class Monitor extends PureComponent {
             data[i].lnglat = [data[i].longitude, data[i].latitude];
             data[i].name = data[i].wellSN;
             data[i].id = i;
-            if(IconStyle===0){
+            if (IconStyle === 0) {
               data[i].style = this.getWarnType(data[i].status);
-            }else{
+            } else {
               data[i].style = IconStyle;
             }
-            
+
             CenterLng += parseFloat(data[i].longitude);
             CenterLat += parseFloat(data[i].latitude);
           }
@@ -271,16 +273,16 @@ class Monitor extends PureComponent {
           this.massMarks.setData(data); // 将数组设置到 massMarks 图层
           this.massMarks.setMap(this.map); // 将 massMarks 添加到地图实例
         }
-      
+
       },
     });
   }
 
   render() {
-    const { loading,monitor={} } = this.props;
-    const {counts={}}=monitor;
-    const {open=0,battery=0,leak=0}=counts;
-    console.log(counts,'dddddddddddddddddd')
+    const { loading, monitor = {} } = this.props;
+    const { counts = {} } = monitor;
+    const { open = 0, battery = 0, leak = 0 } = counts;
+    console.log(counts, 'dddddddddddddddddd')
     const { wellData = {} } = this.state;
     const { status = {} } = wellData;
     const { amplitude = 0, batteryLevel = 0, coverIsOpen = false, distance = 0, frequency = 0, gasLeak = false, photoresistor = 0 } = status;
@@ -308,7 +310,7 @@ class Monitor extends PureComponent {
 
                   <div className={styles.headermiddle}>
                     <div style={{ width: 10 }} />
-                    <Button type='primary' onClick={()=>this.show('getAllWell', 0)}>全部</Button>
+                    <Button type='primary' onClick={() => this.show('getAllWell', 0)}>全部</Button>
                     <div style={{ width: 20 }} />
                     <div style={{ width: 10 }} />
                     <Button type='primary' onClick={() => this.show('getWellBattery', 1)}>电量不足</Button>
@@ -359,27 +361,27 @@ class Monitor extends PureComponent {
               <div className={styles.wellInfoItem}>
                 <div style={{ width: '40%' }}>电量</div>
                 <div style={{ width: '40%' }}><MiniProgress percent={batteryLevel / 255 * 100} strokeWidth={12} target={100} /></div>
-                <div style={{ width: '20%',paddingLeft:'10%' }}>{`${(batteryLevel ).toFixed(1)}`}</div>
+                <div style={{ width: '20%', paddingLeft: '10%' }}>{`${(batteryLevel).toFixed(1)}`}</div>
               </div>
               <div className={styles.wellInfoItem}>
                 <div style={{ width: '40%' }}>超声波频率</div>
                 <div style={{ width: '40%' }}><MiniProgress percent={frequency / 255 * 100} strokeWidth={12} target={100} /></div>
-                <div style={{ width: '20%',paddingLeft:'10%' }}>{`${(photoresistor ).toFixed(1)}`}</div>
+                <div style={{ width: '20%', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
               </div>
               <div className={styles.wellInfoItem}>
                 <div style={{ width: '40%' }}>超声波振幅</div>
                 <div style={{ width: '40%' }}><MiniProgress percent={amplitude / 255 * 100} strokeWidth={12} target={100} /></div>
-                <div style={{ width: '20%',paddingLeft:'10%' }}>{`${(amplitude ).toFixed(1)}`}</div>
+                <div style={{ width: '20%', paddingLeft: '10%' }}>{`${(amplitude).toFixed(1)}`}</div>
               </div>
               <div className={styles.wellInfoItem}>
-                <div style={{ width: '40%'}}>距离:</div>
+                <div style={{ width: '40%' }}>距离:</div>
                 <div style={{ width: '40%' }}><MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} /></div>
-                <div style={{ width: '20%' ,paddingLeft:'10%'}}>{`${(distance).toFixed(1)}`}</div>
+                <div style={{ width: '20%', paddingLeft: '10%' }}>{`${(distance).toFixed(1)}`}</div>
               </div>
               <div className={styles.wellInfoItem}>
                 <div style={{ width: '40%' }}>电位</div>
                 <div style={{ width: '40%' }}><MiniProgress percent={photoresistor / 255 * 100} strokeWidth={12} target={100} /></div>
-                <div style={{ width: '20%',paddingLeft:'10%' }}>{`${(photoresistor ).toFixed(1)}`}</div>
+                <div style={{ width: '20%', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
               </div>
             </Card>
             <Card
@@ -389,7 +391,7 @@ class Monitor extends PureComponent {
               bordered={false}
             >
 
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: 'center' }} className={styles.wave}>
                 <WaterWave
                   height={161}
                   title="电池电量"

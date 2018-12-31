@@ -135,12 +135,20 @@ class TableList extends PureComponent {
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      }
+    })
     dispatch({
       type: `${nameSpace}/fetch`,
-      payload: {},
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   };
 
@@ -155,14 +163,21 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
       dispatch({
         type: `${nameSpace}/fetch`,
-        payload: values,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
     });
   };
@@ -176,7 +191,7 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+              {getFieldDecorator('base')(<Input placeholder="" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>

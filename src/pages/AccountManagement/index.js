@@ -22,7 +22,7 @@ const { Option } = Select;
 const role = ['超级管理员', '管理员', '运维', '普通用户'];
 
 const CreateForm = Form.create()(props => {
-  const { form, record } = props;
+  const { form, record, type } = props;
   return (
     <div>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
@@ -41,6 +41,16 @@ const CreateForm = Form.create()(props => {
           })(<Input placeholder="请输入" />)
         }
       </FormItem>
+      {
+        type === 'add' ?
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
+            {
+              form.getFieldDecorator('password', {
+                rules: [{ required: true, message: '请输入密码' }],
+              })(<Input placeholder="请输入" />)
+            }
+          </FormItem> : ''
+      }
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="权限">
         {
           form.getFieldDecorator('role', {
@@ -48,7 +58,7 @@ const CreateForm = Form.create()(props => {
             initialValue: record.role,
           })(
             <Select placeholder="请选择" style={{ width: '100%' }}>
-              {role.map((r, key) => <Option value={key}>{r}</Option>)}
+              {role.map((r, key) => key !== 0 ? <Option value={key}>{r}</Option> : '')}
             </Select>
           )
         }
@@ -65,22 +75,24 @@ const CreateForm = Form.create()(props => {
 @Form.create()
 class TableList extends PureComponent {
   state = {
-    formValues: {},
     record: {},
   };
 
   columns = [
     {
       title: '姓名',
+      key: 'name',
       dataIndex: 'name',
     },
     {
       title: '邮箱',
+      key: 'email',
       dataIndex: 'email',
     },
     {
       title: '权限',
       dataIndex: 'role',
+      key: 'role',
       render(val) {
         return <div>{role[val]}</div>;
       },
@@ -90,12 +102,20 @@ class TableList extends PureComponent {
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      }
+    })
     dispatch({
       type: `${nameSpace}/fetch`,
-      payload: {},
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   };
 
@@ -110,14 +130,21 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
       dispatch({
         type: `${nameSpace}/fetch`,
-        payload: values,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
     });
   };
@@ -154,12 +181,12 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+              {getFieldDecorator('base')(<Input placeholder="姓名/邮箱" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="权限搜索">
-              {getFieldDecorator('status')(
+              {getFieldDecorator('role')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {role.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
                 </Select>
@@ -188,14 +215,13 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const { formValues, modalVisble } = this.state;
+    const { modalVisble } = this.state;
     return (
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
             {...this.props}
-            formValues={formValues}
             columns={this.columns}
             CreateForm={CreateForm}
             nameSpace={nameSpace}

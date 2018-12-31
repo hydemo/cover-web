@@ -13,6 +13,7 @@ import {
   Modal,
   Dropdown,
   Icon,
+  Select
 } from 'antd';
 
 import BaseTable from '@/components/BaseTable';
@@ -25,7 +26,7 @@ import styles from './Index.less';
 const nameSpace = "wellList"
 
 const FormItem = Form.Item;
-
+const { Option } = Select;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
 const authority = JSON.parse(localStorage.getItem('cover-authority'))
 const role = roleType[authority[0]]
@@ -175,12 +176,20 @@ class TableList extends PureComponent {
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      }
+    })
     dispatch({
       type: `${nameSpace}/fetch`,
-      payload: {},
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   };
 
@@ -195,14 +204,21 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
       dispatch({
         type: `${nameSpace}/fetch`,
-        payload: values,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
     });
   };
@@ -276,7 +292,17 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+              {getFieldDecorator('base')(<Input placeholder="" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="布防/撤防">
+              {getFieldDecorator('isDefence')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value={0} key={0}>撤防</Option>
+                  <Option value={1} key={1}>布防</Option>
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>

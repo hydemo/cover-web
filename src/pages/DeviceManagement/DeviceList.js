@@ -141,7 +141,6 @@ const CreateForm = Form.create()(props => {
 @Form.create()
 class TableList extends PureComponent {
   state = {
-    formValues: {},
     record: {}
   };
 
@@ -182,12 +181,20 @@ class TableList extends PureComponent {
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
-    });
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      }
+    })
     dispatch({
       type: `${nameSpace}/fetch`,
-      payload: {},
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
   };
 
@@ -202,14 +209,21 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
-      });
-
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
       dispatch({
         type: `${nameSpace}/fetch`,
-        payload: values,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
     });
   };
@@ -283,7 +297,7 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+              {getFieldDecorator('base')(<Input placeholder="" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -306,7 +320,7 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const { formValues, modalVisble } = this.state;
+    const { modalVisble } = this.state;
     const rowSelection = {
       type: 'radio',
       onSelect: (record) => this.onRowSelect(record),
@@ -320,7 +334,6 @@ class TableList extends PureComponent {
             update={role && role < 2}
             remove={role && role < 2}
             {...this.props}
-            formValues={formValues}
             columns={this.columns}
             CreateForm={CreateForm}
             nameSpace={nameSpace}
