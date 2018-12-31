@@ -10,38 +10,69 @@ const nameSpace = "monitor"
 }))
 
 class Chart extends Component {
-  data = () => {
-    const d = [];
-    let len = 0;
-    while (len < 200) {
-      d.push([
-        new Date(2014, 9, 1, 0, len * 10000),
-        (Math.random() * 30).toFixed(2) - 0,
-        (Math.random() * 100).toFixed(2) - 0,
-      ]);
-      len += 1;
-    }
-    return d;
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
+   
   }
+  // data = () => {
+  //   const d = [];
+  //   let len = 0;
+  //   while (len < 200) {
+  //     d.push([
+  //       new Date(2014, 9, 1, 0, len * 10000),
+  //       (Math.random() * 30).toFixed(2) - 0,
+  //       // (Math.random() * 100).toFixed(2) - 0,
+  //       1
+        
+  //     ]);
+  //     len += 1;
+  //   }
+  //   return d;
+  // }
 
 componentDidMount(){
   this.fetchHistotyData();
 }
 
 
-fetchHistotyData = () => {
-  const {id,chartType,dispatch} =this.props;
+componentWillReceiveProps(nextProps) {
+ if(nextProps.id!==this.props.id){
+  this.fetchHistotyData(nextProps.id,nextProps.type);
+ }
+}
+
+
+
+fetchHistotyData = (nextPropsId,nextPropsType) => {
+  const type=nextPropsType||this.props.type;
+  const {chartType,dispatch} =this.props;
+  const id=nextPropsId||this.props.id;
   if(chartType&&id){
     dispatch({
       type: `${nameSpace}/getHistory`,
       payload:  {
           id,
-          limit:100000,
+          limit:10000,
           offset:1,
           type:chartType
         }
      ,
-      callBack: (r) => {console.log(r)}
+      callBack: (r) => {
+        const data=[];
+        if(r&&r.list){
+          r.list.map((item,index)=>{
+          data.push([
+          item.createdAt,
+          item[type],
+          ])
+          })
+        }
+        this.setState({data})
+      
+      }
     })
   }
 }
@@ -63,8 +94,7 @@ fetchHistotyData = () => {
             date.getHours()}:${
             date.getMinutes()}`;
           return `${data}<br/>${
-            params.value[1]}, ${
-            params.value[2]}`;
+            params.value[1]}`;
         },
       },
       toolbox: {
@@ -99,13 +129,13 @@ fetchHistotyData = () => {
       ],
       series: [
         {
-          name: 'series1',
+          // name: 'series1',
           type: 'line',
           showAllSymbol: true,
           symbolSize(value) {
             return Math.round(value[2] / 10) + 2;
           },
-          data: this.data(),
+          data: this.state.data,
         },
       ],
     };

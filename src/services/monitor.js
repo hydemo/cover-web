@@ -43,7 +43,7 @@ export async function getWarnsCount() {
   });
 }
 
-export async function getBatteryHistory(query) {
+export async function getHistory(query) {
   return axios({
     url: `/data/${query.type}/well/${query.id}`,
     method: 'GET',
