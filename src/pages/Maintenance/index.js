@@ -9,14 +9,16 @@ import {
   Input,
   Button,
   Table,
+  Select
 } from 'antd';
 import moment from 'moment';
 import styles from './Index.less';
 
 const FormItem = Form.Item;
+const { Option } = Select;
 
 const nameSpace = "maintenanceList";
-const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电池电量不足' }
+const type = { Open: '井盖打开', Leak: '燃气泄漏', Battery: '电量不足' }
 const statusType = ['未处理', '已撤防', '已布防', '已反馈']
 /* eslint-disable no-underscore-dangle */
 @connect((state) => ({
@@ -26,7 +28,6 @@ const statusType = ['未处理', '已撤防', '已布防', '已反馈']
 @Form.create()
 class TableList extends PureComponent {
   state = {
-    formValues: {},
   };
 
   columns = [
@@ -41,10 +42,10 @@ class TableList extends PureComponent {
       key: 'device',
     },
     {
-      title: '异常类型',
-      dataIndex: 'warningType',
-      key: 'warningType',
-      render: (text, record) => type[record.warningType],
+      title: '维修类型',
+      dataIndex: 'maintenanceType',
+      key: 'maintenanceType',
+      render: (text, record) => type[record.maintenanceType],
 
     },
     {
@@ -96,7 +97,8 @@ class TableList extends PureComponent {
   }
 
   handleTableChange = (newPagination) => {
-    const { dispatch } = this.props;
+    const { dispatch, result: { data } } = this.props;
+    const { pagination } = data;
     dispatch({
       type: `${nameSpace}/setPagination`,
       payload: {
@@ -109,25 +111,37 @@ class TableList extends PureComponent {
           payload: {
             offset: newPagination.current,
             limit: newPagination.pageSize,
+            search: pagination.search,
           }
         });
-      }
+      },
     })
-  };
+  }
 
   handleFormReset = () => {
-    const { form } = this.props;
+    const { form, dispatch } = this.props;
     form.resetFields();
-    this.setState({
-      formValues: {},
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      }
+    })
+    dispatch({
+      type: `${nameSpace}/fetch`,
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
     });
-    this.fetch()
   };
 
   handleSearch = e => {
     e.preventDefault();
 
-    const { form } = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -135,12 +149,22 @@ class TableList extends PureComponent {
       const values = {
         ...fieldsValue,
       };
-
-      this.setState({
-        formValues: values,
+      const { result: { data } } = this.props;
+      const { pagination } = data;
+      dispatch({
+        type: `${nameSpace}/setPagination`,
+        payload: {
+          search: values,
+        }
+      })
+      dispatch({
+        type: `${nameSpace}/fetch`,
+        payload: {
+          offset: pagination.current,
+          limit: pagination.pageSize,
+          search: values,
+        }
       });
-
-      this.fetch()
     });
   };
 
@@ -159,22 +183,41 @@ class TableList extends PureComponent {
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Row gutter={{ md: 8, lg: 24, xl: 24 }}>
           <Col md={8} sm={24}>
             <FormItem label="基本搜索">
-              {getFieldDecorator('name')(<Input placeholder="姓名/邮箱/地址" />)}
+              {getFieldDecorator('base')(<Input placeholder="" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
+            <FormItem label="维修类型">
+              {getFieldDecorator('maintenanceType')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="Open" key="Open">井盖打开</Option>
+                  <Option value="Leak" key="Leak">燃气泄漏</Option>
+                  <Option value="Battery" key="Battery">电量不足</Option>
+                </Select>
+              )}
+            </FormItem>
           </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('status')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  {statusType.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <div style={{ float: 'right', marginBottom: 24 }}>
+            <Button type="primary" htmlType="submit">
+              查询
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
+            </Button>
+
+          </div>
         </Row>
       </Form>
     );
