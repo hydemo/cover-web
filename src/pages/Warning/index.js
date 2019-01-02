@@ -317,6 +317,7 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <Table
+            rowKey={(record)=>record._id}
             loading={loading}
             dataSource={data.list}
             pagination={pagination}

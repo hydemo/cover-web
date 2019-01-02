@@ -102,32 +102,39 @@ class TableList extends PureComponent {
     {
       title: '卡号',
       dataIndex: 'cardNumber',
+      key: 'cardNumber',
     },
     {
       title: '运营商',
       dataIndex: 'operator',
+      key: 'operator',
     },
     {
       title: '资费开始时间',
       dataIndex: 'tariffStartTime',
+      key: 'tariffStartTime',
       render: (text, record) => record.tariffStartTime ? moment(record.tariffStartTime).format('YYYY-MM-DD') : null
     },
     {
       title: '资费到期时间',
       dataIndex: 'tariffExpireTime',
+      key: 'tariffExpireTime',
       render: (text, record) => record.tariffExpireTime ? moment(record.tariffExpireTime).format('YYYY-MM-DD') : null
     },
     {
       title: '累计流量',
       dataIndex: 'tatalFlow',
+      key: 'tatalFlow',
     },
     {
       title: '累计资费',
       dataIndex: 'tatalTariff',
+      key: 'tatalTariff',
     },
     {
       title: '状态',
       dataIndex: 'status',
+      key: 'status',
     },
   ];
 

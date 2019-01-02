@@ -12,7 +12,7 @@ import {
 } from 'antd';
 /* eslint-disable no-underscore-dangle */
 import BaseTable from '@/components/BaseTable';
-
+import Location from '@/components/Location'
 import styles from './Index.less';
 
 const nameSpace = "accountmanagement"
@@ -63,6 +63,7 @@ const CreateForm = Form.create()(props => {
           )
         }
       </FormItem>
+      <Location form={form} record={record} />
     </div>
   );
 })
@@ -96,6 +97,11 @@ class TableList extends PureComponent {
       render(val) {
         return <div>{role[val]}</div>;
       },
+    },
+    {
+      title: '区域',
+      dataIndex: 'location',
+      key: 'location',
     },
   ];
 

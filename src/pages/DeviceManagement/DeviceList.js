@@ -148,31 +148,38 @@ class TableList extends PureComponent {
     {
       title: '设备编号',
       dataIndex: 'deviceSn',
+      key:'deviceSn',
     },
     {
       title: '设备名称',
       dataIndex: 'deviceName',
+      key: 'deviceName',
     },
     {
       title: '设备类型',
       dataIndex: 'deviceType',
+      key: 'deviceType',
     },
     {
       title: '安装时间',
       dataIndex: 'installTime',
+      key: 'installTime',
       render: (text, record) => record.installTime ? moment(record.installTime).format('YYYY-MM-DD') : null
     },
     {
       title: '硬件版本号',
       dataIndex: 'hardwareVersion',
+      key: 'hardwareVersion',
     },
     {
       title: '软件版本号',
       dataIndex: 'softwareVersion',
+      key: 'softwareVersion',
     },
     {
       title: '使用状态',
       dataIndex: 'status',
+      key: 'status',
     },
   ];
 

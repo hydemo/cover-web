@@ -94,10 +94,14 @@ class BaseTable extends PureComponent {
     const { dispatch, nameSpace, form } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
+      let value=values;
+      if(values.location&&values.location.length){
+       value={...values,location:values.location.toString().replace(/,/g,'-')}
+      }
       form.resetFields();
       dispatch({
         type: `${nameSpace}/add`,
-        payload: values,
+        payload: value,
         callback: () => {
           this.fetch()
         }
@@ -113,12 +117,16 @@ class BaseTable extends PureComponent {
     const { _id } = record;
     form.validateFields((err, values) => {
       if (err) return;
+      let value=values;
+      if(values.location&&values.location.length){
+       value={...values,location:values.location.toString().replace(/,/g,'-')}
+      }
       form.resetFields();
       dispatch({
         type: `${nameSpace}/update`,
         payload: {
           id: _id,
-          data: values,
+          data: value,
         },
         callback: () => {
           this.fetch()
@@ -166,6 +174,7 @@ class BaseTable extends PureComponent {
             新建
           </Button> : ''}
         <Table
+          rowKey={(record)=>record._id}
           loading={loading}
           rowSelection={rowSelection}
           dataSource={data.list}
@@ -181,6 +190,7 @@ class BaseTable extends PureComponent {
           visible={modalVisible}
           onOk={type === 'add' ? this.handleAdd : this.handleUpdate}
           onCancel={() => this.handleModalVisible()}
+          width='700px'
         >
           <CreateForm form={form} record={record} type={type} />
         </Modal>
