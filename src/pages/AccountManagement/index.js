@@ -158,21 +158,21 @@ class TableList extends PureComponent {
     });
   };
 
-  onPasswordChange = e => {
-    this.setState({ password: e.target.value })
-  }
 
   onPasswordReset = () => {
-    const { dispatch } = this.props
-    const { record, password } = this.state
-    dispatch({
-      type: `${nameSpace}/password`,
-      payload: {
-        id: record._id,
-        password,
-      },
-    });
-    this.setState({ modalVisble: false, password: '' })
+    const { dispatch, form } = this.props
+    const { record } = this.state
+    form.validateFields((err, values) => {
+      if (err) return;
+      dispatch({
+        type: `${nameSpace}/password`,
+        payload: {
+          id: record._id,
+          password: values.password,
+        },
+      });
+      this.setState({ modalVisble: false })
+    })
   }
 
   ExtendAction = (props) => {
@@ -224,6 +224,7 @@ class TableList extends PureComponent {
   }
 
   render() {
+    const { form } = this.props
     const { modalVisble } = this.state;
     return (
       <Card bordered={false}>
@@ -238,13 +239,18 @@ class TableList extends PureComponent {
           />
         </div>
         <Modal
+          destroyOnClose
           title="修改密码"
           visible={modalVisble}
           onOk={this.onPasswordReset}
           onCancel={() => this.setState({ modalVisble: false })}
         >
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
-            <Input onChange={this.onPasswordChange} placeholder="请输入" />
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+            {
+              form.getFieldDecorator('name', {
+                rules: [{ required: true, message: '请输入密码' }],
+              })(<Input placeholder="请输入" />)
+            }
           </FormItem>
         </Modal>
       </Card>

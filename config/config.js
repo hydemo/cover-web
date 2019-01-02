@@ -34,7 +34,7 @@ const plugins = [
             include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
             exclude: ['@babel/runtime'],
           },
-          // hardSource: true,
+          hardSource: true,
         }
         : {}),
     },
@@ -110,11 +110,11 @@ export default {
             uglifyOptions: {
               compress: {
                 // 删除所有的 `console` 语句
-                // drop_console: true,
+                drop_console: true,
               },
               output: {
                 // 最紧凑的输出
-                beautify: false,
+                beautify: true,
                 // 删除所有的注释
                 comments: false,
               },
