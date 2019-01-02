@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Row, Col, Card, Button, message, Tooltip } from 'antd';
 import { WaterWave, MiniProgress } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
-
+import axios from 'axios';
 import Authorized from '@/utils/Authorized';
 import styles from './Index.less';
 import Data from './data';
@@ -49,7 +49,12 @@ class Monitor extends PureComponent {
     this.resize.bind(this);
   }
 
+
+
+
+
   componentDidMount() {
+    this.getCity();
     this.screenChange();
     setTimeout(() => {
       const leftTopDiv = this.leftTopDiv.clientHeight;
@@ -113,6 +118,14 @@ class Monitor extends PureComponent {
     window.removeEventListener('resize', this.resize);
   }
 
+  getCity = () => {
+    axios.get('https://restapi.amap.com/v3/config/district?key=2df64031affa2bcb7370bbc93591df60&subdistrict=3').then((response) => {
+      console.log(response);
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   resize = () => {
     setTimeout(() => {
@@ -233,25 +246,24 @@ class Monitor extends PureComponent {
       callBack: (r) => {
         if (r) {
           const data = r;
-          let CenterLng = 0;
-          let CenterLat = 0;
-          for (let i = 0; i < data.length; i += 1) {
-            data[i].lnglat = [data[i].longitude, data[i].latitude];
-            data[i].name = data[i].wellSN;
-            data[i].id = i;
-            if (IconStyle === 0) {
-              data[i].style = this.getWarnType(data[i].status);
-            } else {
-              data[i].style = IconStyle;
-            }
+          const NewData = [];
+          console.log(r, 'datar')
 
-            CenterLng += parseFloat(data[i].longitude);
-            CenterLat += parseFloat(data[i].latitude);
+          for (let i = 0; i < data.length; i += 1) {
+            if (data[i].longitude && data[i].latitude) {
+              data[i].lnglat = [data[i].longitude, data[i].latitude];
+              data[i].name = data[i].wellSN;
+              data[i].id = i;
+              if (IconStyle === 0) {
+                data[i].style = this.getWarnType(data[i].status);
+              } else {
+                data[i].style = IconStyle;
+              }
+              NewData.push(data[i])
+            }
           }
-          if (data.length) {
-            this.map.setCenter([CenterLng / data.length, CenterLat / data.length]);
-          }
-          this.massMarks.setData(data); // 将数组设置到 massMarks 图层
+
+          this.massMarks.setData(NewData); // 将数组设置到 massMarks 图层
           this.massMarks.setMap(this.map); // 将 massMarks 添加到地图实例
         }
 

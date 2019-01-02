@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, updateMe, resetPassword } from '@/services/user';
+import { query as queryUsers, queryCurrent, updateMe, resetPasswordMe } from '@/services/user';
 import { baseURL } from '@/utils/config'
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -44,7 +44,7 @@ export default {
     },
 
     *resetPassword({ callback, payload }, { call }) {
-      const response = yield call(resetPassword, payload);
+      const response = yield call(resetPasswordMe, payload);
       if (callback && response) callback()
 
     },

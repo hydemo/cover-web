@@ -19,7 +19,7 @@ import {
 import BaseTable from '@/components/BaseTable';
 import OwnerTable from '@/pages/WellManagement/OwnerList'
 import DeviceTable from '@/pages/DeviceManagement/DeviceList'
-
+import Location from '@/components/Location'
 /* eslint-disable no-underscore-dangle */
 import styles from './Index.less';
 
@@ -91,14 +91,7 @@ const CreateForm = Form.create()(props => {
           })(<InputNumber step={0.1} max={90} min={-90} placeholder="请输入" />)
         }
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="位置">
-        {
-          form.getFieldDecorator('location', {
-            rules: [{ required: false, message: '请输入位置' }],
-            initialValue: record.location,
-          })(<Input placeholder="请输入" />)
-        }
-      </FormItem>
+      <Location record={record} form={form} />
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="累计流量">
         {
           form.getFieldDecorator('tatalFlow', {
@@ -137,34 +130,37 @@ class TableList extends PureComponent {
     {
       title: '窨井编号',
       dataIndex: 'wellSN',
+      key: 'wellSN',
     },
     {
       title: '业主id',
       dataIndex: 'ownerId.ownerId',
+      key: 'ownerId.ownerId',
     },
     {
       title: '业主名称',
       dataIndex: 'ownerId.ownerName',
+      key: 'ownerId.ownerName',
     },
     {
       title: '位置',
       dataIndex: 'location',
+      key: 'location',
     },
     {
       title: '设备编号',
       dataIndex: 'deviceId.deviceSn',
-    },
-    {
-      title: '设备编号',
-      dataIndex: 'deviceId.deviceSn',
+      key: 'deviceId.deviceSn',
     },
     {
       title: 'SIM卡号',
       dataIndex: 'deviceId.simId.cardNumber',
+      key: 'deviceId.simId.cardNumber',
     },
     {
       title: '布防/撤防',
       dataIndex: 'isDefence',
+      key: 'isDefence',
       render: (text, record) => record.isDefence ? '布防' : '撤防'
     },
   ];
@@ -256,7 +252,7 @@ class TableList extends PureComponent {
           </Menu>
         }
       >
-        <a>
+        <a style={{ fontSize: '14px' }}>
           更多 <Icon type="down" />
         </a>
       </Dropdown> :

@@ -12,7 +12,7 @@ import {
 } from 'antd';
 /* eslint-disable no-underscore-dangle */
 import BaseTable from '@/components/BaseTable';
-
+import Location from '@/components/Location';
 import styles from './Index.less';
 
 const nameSpace = "accountmanagement"
@@ -58,11 +58,15 @@ const CreateForm = Form.create()(props => {
             initialValue: record.role,
           })(
             <Select placeholder="请选择" style={{ width: '100%' }}>
-              {role.map((r, key) => key !== 0 ? <Option value={key}>{r}</Option> : '')}
+              {role.map((r, key) => key !== 0 ?
+                <Option value={key} key={r}> {r}</Option> :
+                <Option disabled value={key} key={r}> {r}</Option>
+              )}
             </Select>
           )
         }
       </FormItem>
+      <Location form={form} record={record} />
     </div>
   );
 })
@@ -96,6 +100,11 @@ class TableList extends PureComponent {
       render(val) {
         return <div>{role[val]}</div>;
       },
+    },
+    {
+      title: '区域',
+      dataIndex: 'location',
+      key: 'location',
     },
   ];
 
@@ -163,12 +172,12 @@ class TableList extends PureComponent {
         password,
       },
     });
-    this.setState({ modalVisble: false })
+    this.setState({ modalVisble: false, password: '' })
   }
 
   ExtendAction = (props) => {
     const { record } = props
-    return (<a onClick={() => this.setState({ record, modalVisble: true })}> 修改密码</a>)
+    return (<a onClick={() => this.setState({ record, modalVisble: true })} style={{ fontSize: '14px' }}> 修改密码</a>)
   }
 
 

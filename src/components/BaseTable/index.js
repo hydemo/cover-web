@@ -11,7 +11,7 @@ import {
 
 
 
-/* eslint react/no-multi-comp:0 */
+/* eslint-disable react/no-multi-comp:0,no-underscore-dangle */
 @Form.create()
 class BaseTable extends PureComponent {
   state = {
@@ -30,13 +30,13 @@ class BaseTable extends PureComponent {
       render: (text, record) => (
         <div>
           {update ?
-            <a onClick={() => this.setState({ modalVisible: true, type: 'edit', record })}>
+            <a style={{ fontSize: '14px' }} onClick={() => this.setState({ modalVisible: true, type: 'edit', record })}>
               修改
               <Divider type="vertical" />
             </a> : ''}
           {remove ?
             <Popconfirm title="确定删除？" onConfirm={() => this.handleDelete(record)}>
-              <a>删除</a>
+              <a style={{ fontSize: '14px' }}>删除</a>
               <Divider type="vertical" />
             </Popconfirm> : ''}
           {ExtendAction ? <span><ExtendAction record={record} /></span> : ''}
@@ -94,10 +94,14 @@ class BaseTable extends PureComponent {
     const { dispatch, nameSpace, form } = this.props;
     form.validateFields((err, values) => {
       if (err) return;
+      let value = values;
+      if (values.location && values.location.length) {
+        value = { ...values, location: values.location.toString().replace(/,/g, '-') }
+      }
       form.resetFields();
       dispatch({
         type: `${nameSpace}/add`,
-        payload: values,
+        payload: value,
         callback: () => {
           this.fetch()
         }
@@ -113,12 +117,16 @@ class BaseTable extends PureComponent {
     const { _id } = record;
     form.validateFields((err, values) => {
       if (err) return;
+      let value = values;
+      if (values.location && values.location.length) {
+        value = { ...values, location: values.location.toString().replace(/,/g, '-') }
+      }
       form.resetFields();
       dispatch({
         type: `${nameSpace}/update`,
         payload: {
           id: _id,
-          data: values,
+          data: value,
         },
         callback: () => {
           this.fetch()
@@ -166,6 +174,7 @@ class BaseTable extends PureComponent {
             新建
           </Button> : ''}
         <Table
+          rowKey={(re) => re._id}
           loading={loading}
           rowSelection={rowSelection}
           dataSource={data.list}
@@ -181,6 +190,7 @@ class BaseTable extends PureComponent {
           visible={modalVisible}
           onOk={type === 'add' ? this.handleAdd : this.handleUpdate}
           onCancel={() => this.handleModalVisible()}
+          width='700px'
         >
           <CreateForm form={form} record={record} type={type} />
         </Modal>
