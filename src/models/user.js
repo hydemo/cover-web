@@ -1,4 +1,5 @@
 import { query as queryUsers, queryCurrent, updateCurrent } from '@/services/user';
+import { baseURL } from '@/utils/config'
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -52,9 +53,15 @@ export default {
     },
     saveCurrentUser(state, { payload }) {
       setAuthority(payload.currentAuthority);
+      const { avatar } = payload.response.data
+      const { data } = payload.response
+      if (avatar) {
+        data.avatar = `${baseURL}/${avatar}`
+      }
+      console.log(data, 'data')
       return {
         ...state,
-        currentUser: payload.response.data || {},
+        currentUser: data || {},
       };
     },
     changeNotifyCount(state, { payload }) {

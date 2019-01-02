@@ -5,28 +5,28 @@ import { connect } from 'dva';
 import cookies from 'js-cookie';
 import styles from './BaseView.less';
 import { baseURL } from '@/utils/config';
-// import { getTimeDistance } from '@/utils/utils';
+
 /* eslint-disable no-underscore-dangle */
 const token = cookies.get('access_token');
 const FormItem = Form.Item;
 // 头像组件 方便以后独立，增加裁剪之类的功能
-// const AvatarView = ({ avatar }) => (
-//   <Fragment>
-//     <div className={styles.avatar_title}>
-//       <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
-//     </div>
-//     <div className={styles.avatar}>
-//       <img src={avatar} alt="avatar" />
-//     </div>
-//     <Upload fileList={[]} action={`${baseURL}/user/upload`} headers={{ Authorization: `Bearer ${token}` }}>
-//       <div className={styles.button_view}>
-//         <Button icon="upload">
-//           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-//         </Button>
-//       </div>
-//     </Upload>
-//   </Fragment>
-// );
+const AvatarView = ({ avatar }) => (
+  <Fragment>
+    <div className={styles.avatar_title}>
+      <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
+    </div>
+    <div className={styles.avatar}>
+      <img src={avatar} alt="avatar" />
+    </div>
+    <Upload fileList={[]} action={`${baseURL}/user/upload`} headers={{ Authorization: `Bearer ${token}` }}>
+      <div className={styles.button_view}>
+        <Button icon="upload">
+          <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+        </Button>
+      </div>
+    </Upload>
+  </Fragment>
+);
 
 @connect(({ user }) => ({
   currentUser: user.currentUser,
@@ -111,9 +111,9 @@ class BaseView extends Component {
             </Button>
           </Form>
         </div>
-        {/* <div className={styles.right}>
+        <div className={styles.right}>
           <AvatarView avatar={this.getAvatarURL()} />
-        </div> */}
+        </div>
       </div>
     );
   }
