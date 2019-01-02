@@ -174,6 +174,10 @@ class TableList extends PureComponent {
       title: '使用状态',
       dataIndex: 'status',
     },
+    {
+      title: 'SIM卡号',
+      dataIndex: 'simId.cardNumber',
+    },
   ];
 
 

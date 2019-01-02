@@ -22,6 +22,9 @@
 .headers{
 display: flex;
 justify-content: space-between;
+flex-wrap: wrap;
+align-items: center;
+
 
 }
 .chart{
@@ -36,7 +39,8 @@ justify-content: space-between;
   justify-content: center;
   padding-right: 10px;
   align-items: center;
-  height: 30px;
+  // line-height: 40px;
+  height: 40px;
   // margin-bottom: 20px;
 }
 
@@ -46,17 +50,24 @@ justify-content: space-between;
   justify-content: center;
   padding-right: 10px;
   align-items: center;
-  height: 30px;
+  height: 40px;
   // margin-bottom: 20px;
 }
-
+.headerright{
+  display: flex;
+  justify-content: center;
+  padding-right: 10px;
+  align-items: center;
+  // line-height: 40px;
+  height: 40px;
+}
 .headermiddle{
   // width: 100%;
   display: flex;
   justify-content: center;
   padding-right: 10px;
   align-items: center;
-  height: 30px;
+  height: 40px;
   // margin-bottom: 20px;
 }
 .pieCard :global(.pie-stat) {
@@ -76,12 +87,27 @@ justify-content: space-between;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // flex-shrink: 1;
 }
+.minibar{
 
+  flex-grow: 1;
+}
 .status{
 width: 100%;
   display: flex;
   flex-grow: 0;
   justify-content: space-around;
+}
+
+.wave{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.wave>div{
+
+  width: 50%;
 }

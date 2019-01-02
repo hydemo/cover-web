@@ -57,11 +57,11 @@ export default class BaseMenu extends PureComponent {
             item.icon ? (
               <span>
                 {getIcon(item.icon)}
-                <span>{name}</span>
+                <span style={{ fontSize: '14px' }}>{name}</span>
               </span>
             ) : (
-              name
-            )
+                name
+              )
           }
           key={item.path}
         >
@@ -100,13 +100,13 @@ export default class BaseMenu extends PureComponent {
         onClick={
           isMobile
             ? () => {
-                onCollapse(true);
-              }
+              onCollapse(true);
+            }
             : undefined
         }
       >
         {icon}
-        <span>{name}</span>
+        <span style={{ fontSize: '14px' }}>{name}</span>
       </Link>
     );
   };

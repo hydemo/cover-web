@@ -30,9 +30,9 @@ export async function queryUsers(query) {
   });
 }
 
-export async function updateUser(query) {
+export async function updateMe(query) {
   return axios({
-    url: `/user/${query.id}`,
+    url: `/user/${query.id}/me`,
     method: 'PUT',
     data: query.data,
   });
@@ -48,10 +48,8 @@ export async function removeUser(query) {
 
 export async function resetPassword(query) {
   return axios({
-    url: `/user/${query.id}/password`,
+    url: `/user/${query.id}/password/me`,
     method: 'PUT',
-    data: {
-      password: query.password,
-    },
+    data: query.data,
   });
 }

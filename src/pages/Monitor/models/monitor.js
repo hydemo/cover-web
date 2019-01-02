@@ -1,40 +1,44 @@
-import { getAllWell, getWellOpen,getWellLeak,getWellBattery,getWarnsCount} from '@/services/monitor';
+import { getAllWell, getWellOpen, getWellLeak, getWellBattery, getWarnsCount, getHistory } from '@/services/monitor';
 
 export default {
   namespace: 'monitor',
 
   state: {
-    counts:{}
+    counts: {}
     // tags: [],
   },
 
   effects: {
-    *getAllWell({callBack}, { call }) {
+    *getAllWell({ callBack }, { call }) {
       const response = yield call(getAllWell);
       // console.log(response,'response')
-    if(callBack) callBack(response);
+      if (callBack) callBack(response);
     },
 
-    *getWellOpen({callBack}, { call }) {
+    *getWellOpen({ callBack }, { call }) {
       const response = yield call(getWellOpen);
-    if(callBack) callBack(response);
+      if (callBack) callBack(response);
     },
 
-    *getWellLeak({callBack}, { call }) {
+    *getWellLeak({ callBack }, { call }) {
       const response = yield call(getWellLeak);
-    if(callBack) callBack(response);
+      if (callBack) callBack(response);
     },
-    *getWellBattery({callBack}, { call }) {
+    *getWellBattery({ callBack }, { call }) {
       const response = yield call(getWellBattery);
-    if(callBack) callBack(response);
+      if (callBack) callBack(response);
     },
-    *getWarnsCount({callBack}, { call,put }) {
+    *getWarnsCount({ callBack }, { call, put }) {
       const response = yield call(getWarnsCount);
       yield put({
         type: 'setCounts',
         payload: response,
       });
-    if(callBack) callBack(response);
+      if (callBack) callBack(response);
+    },
+    *getHistory({ payload, callBack }, { call }) {
+      const response = yield call(getHistory, payload);
+      if (callBack) callBack(response);
     },
   },
 

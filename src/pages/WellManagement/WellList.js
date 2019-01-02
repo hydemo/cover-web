@@ -78,17 +78,17 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="经度">
         {
           form.getFieldDecorator('longitude', {
-            rules: [{ required: false, message: '请输入经度' }],
+            rules: [{ required: true, message: '请输入经度' }],
             initialValue: record.longitude ? Number(record.longitude) : null,
-          })(<InputNumber step={0.1} placeholder="请输入" />)
+          })(<InputNumber step={0.1} max={180} min={-180} placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="纬度">
         {
           form.getFieldDecorator('latitude', {
-            rules: [{ required: false, message: '请输入纬度' }],
+            rules: [{ required: true, message: '请输入纬度' }],
             initialValue: record.latitude ? Number(record.latitude) : null,
-          })(<InputNumber step={0.1} placeholder="请输入" />)
+          })(<InputNumber step={0.1} max={90} min={-90} placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="位置">
@@ -147,12 +147,20 @@ class TableList extends PureComponent {
       dataIndex: 'ownerId.ownerName',
     },
     {
-      title: '窨井类型',
-      dataIndex: 'wellType',
-    },
-    {
       title: '位置',
       dataIndex: 'location',
+    },
+    {
+      title: '设备编号',
+      dataIndex: 'deviceId.deviceSn',
+    },
+    {
+      title: '设备编号',
+      dataIndex: 'deviceId.deviceSn',
+    },
+    {
+      title: 'SIM卡号',
+      dataIndex: 'deviceId.simId.cardNumber',
     },
     {
       title: '布防/撤防',
@@ -298,7 +306,7 @@ class TableList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="布防/撤防">
               {getFieldDecorator('isDefence')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
+                <Select placeholder="请选择" style={{ width: '150px' }}>
                   <Option value={0} key={0}>撤防</Option>
                   <Option value={1} key={1}>布防</Option>
                 </Select>

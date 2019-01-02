@@ -4,7 +4,8 @@ import moment from 'moment';
 import { Card, Divider } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-// import styles from './WellProfile.less';
+import styles from './WellProfile.less';
+import DataTable from './DataTable';
 
 const { Description } = DescriptionList;
 
@@ -25,6 +26,94 @@ class WellProfile extends Component {
     const { ownerId: owner = {} } = well
     const { simId: sim = {} } = device || {}
     const { status = {} } = well
+
+    const batteryColumns = [
+      {
+        title: '窨井编号',
+        dataIndex: 'wellId.wellSN',
+        key: 'wellSn',
+      },
+      {
+        title: '设备编号',
+        dataIndex: 'deviceId.deviceSn',
+        key: 'deviceSn',
+      },
+      {
+        title: '电量',
+        dataIndex: 'batteryLevel',
+        key: 'battery',
+      },
+    ]
+    const amplitudeColumns = [
+      {
+        title: '窨井编号',
+        dataIndex: 'wellId.wellSN',
+        key: 'wellSn',
+      },
+      {
+        title: '设备编号',
+        dataIndex: 'deviceId.deviceSn',
+        key: 'deviceSn',
+      },
+      {
+        title: '超声波振幅',
+        dataIndex: 'amplitude',
+        key: 'amplitude',
+      },
+    ]
+
+    const frequencyColumns = [
+      {
+        title: '窨井编号',
+        dataIndex: 'wellId.wellSN',
+        key: 'wellSn',
+      },
+      {
+        title: '设备编号',
+        dataIndex: 'deviceId.deviceSn',
+        key: 'deviceSn',
+      },
+      {
+        title: '超声波频率',
+        dataIndex: 'frequency',
+        key: 'frequency',
+      },
+    ]
+    const distanceColumns = [
+      {
+        title: '窨井编号',
+        dataIndex: 'wellId.wellSN',
+        key: 'wellSn',
+      },
+      {
+        title: '设备编号',
+        dataIndex: 'deviceId.deviceSn',
+        key: 'deviceSn',
+      },
+      {
+        title: '距离',
+        dataIndex: 'distance',
+        key: 'distance',
+      },
+    ]
+    const photoresistorColumns = [
+      {
+        title: '窨井编号',
+        dataIndex: 'wellId.wellSN',
+        key: 'wellSn',
+      },
+      {
+        title: '设备编号',
+        dataIndex: 'deviceId.deviceSn',
+        key: 'deviceSn',
+      },
+      {
+        title: '光强',
+        dataIndex: 'photoresistor',
+        key: 'photoresistor',
+      },
+    ]
+    /* eslint-disable no-underscore-dangle */
     return (
       <PageHeaderWrapper title="窨井详情">
         <Card bordered={false}>
@@ -87,9 +176,54 @@ class WellProfile extends Component {
             <Description term="超声波频率">{status.frequency}</Description>
             <Description term="超声波振幅">{status.amplitude}</Description>
             <Description term="距离">{status.distance}</Description>
-            <Description term="点位">{status.photoresistor}</Description>
+            <Description term="光强">{status.photoresistor}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
+          <div className={styles.title}>电量趋势表</div>
+          <DataTable
+            type='battery'
+            nameSpace='battery'
+            wellId={well._id}
+            style={{ marginBottom: 24 }}
+            columns={batteryColumns}
+            rowKey="id"
+          />
+          <div className={styles.title}>超声波振幅趋势表</div>
+          <DataTable
+            type='audioFre'
+            nameSpace='amplitude'
+            wellId={well._id}
+            style={{ marginBottom: 24 }}
+            columns={amplitudeColumns}
+            rowKey="id"
+          />
+          <div className={styles.title}>超声波频率趋势表</div>
+          <DataTable
+            type='audioFre'
+            nameSpace='frequency'
+            wellId={well._id}
+            style={{ marginBottom: 24 }}
+            columns={frequencyColumns}
+            rowKey="id"
+          />
+          <div className={styles.title}>距离趋势表</div>
+          <DataTable
+            type='wellCover'
+            nameSpace='distance'
+            wellId={well._id}
+            style={{ marginBottom: 24 }}
+            columns={distanceColumns}
+            rowKey="id"
+          />
+          <div className={styles.title}>光强趋势表</div>
+          <DataTable
+            type='wellCover'
+            nameSpace='photoresistor'
+            wellId={well._id}
+            style={{ marginBottom: 24 }}
+            columns={photoresistorColumns}
+            rowKey="id"
+          />
         </Card>
       </PageHeaderWrapper>
     );

@@ -42,6 +42,20 @@ export async function getWarnsCount() {
     method: 'GET',
   });
 }
+
+export async function getHistory(query) {
+  return axios({
+    url: `/data/${query.type}/well/${query.id}/all`,
+    method: 'GET',
+  });
+}
+
+export async function getHistoryPage(query) {
+  return axios({
+    url: `/data/${query.type}/well/${query.id}`,
+    method: 'GET',
+  });
+}
 // export async function queryCurrent() {
 //   return axios({
 //     url: '/api/currentUser',

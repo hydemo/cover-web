@@ -13,14 +13,14 @@ const SiderMenuWrapper = React.memo(props => {
       onClose={() => onCollapse(true)}
       style={{
         padding: 0,
-        height: '100vh',
+        height: '120vh',
       }}
     >
       <SiderMenu {...props} flatMenuKeys={flatMenuKeys} collapsed={isMobile ? false : collapsed} />
     </Drawer>
   ) : (
     <SiderMenu {...props} flatMenuKeys={flatMenuKeys} />
-  );
+    );
 });
 
 export default SiderMenuWrapper;

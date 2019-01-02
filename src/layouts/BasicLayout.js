@@ -10,7 +10,7 @@ import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
@@ -71,6 +71,10 @@ class BasicLayout extends React.PureComponent {
         dispatch({
           type: 'menu/getMenuData',
           payload: { routes, authority },
+        });
+        dispatch({
+          type: 'menu/getUnreadCount',
+          payload: {},
         });
       }
     });
@@ -167,8 +171,8 @@ class BasicLayout extends React.PureComponent {
       breadcrumbNameMap,
       route: { routes },
       fixedHeader,
+      unreadCount,
     } = this.props;
-
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.getRouterAuthority(pathname, routes);
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -192,6 +196,7 @@ class BasicLayout extends React.PureComponent {
         >
           <Header
             menuData={menuData}
+            unreadCount={unreadCount}
             handleMenuCollapse={this.handleMenuCollapse}
             logo={logo}
             isMobile={isMobile}
@@ -228,6 +233,7 @@ export default connect(({ global, setting, menu }) => ({
   layout: setting.layout,
   menuData: menu.menuData,
   breadcrumbNameMap: menu.breadcrumbNameMap,
+  unreadCount: menu.unreadCount,
   ...setting,
 }))(props => (
   <Media query="(max-width: 599px)">

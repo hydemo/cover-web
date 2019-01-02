@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, updateCurrent } from '@/services/user';
+import { query as queryUsers, queryCurrent, updateMe, resetPassword } from '@/services/user';
 import { baseURL } from '@/utils/config'
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -31,8 +31,8 @@ export default {
         if (callback) callback()
       }
     },
-    *updateCurrent({ callback, payload }, { call, put }) {
-      const response = yield call(updateCurrent, payload);
+    *updateMe({ callback, payload }, { call, put }) {
+      const response = yield call(updateMe, payload);
       if (response) {
         yield put({
           type: 'saveCurrentUser',
@@ -41,6 +41,12 @@ export default {
         reloadAuthorized();
         if (callback) callback()
       }
+    },
+
+    *resetPassword({ callback, payload }, { call }) {
+      const response = yield call(resetPassword, payload);
+      if (callback && response) callback()
+
     },
   },
 
@@ -58,7 +64,6 @@ export default {
       if (avatar) {
         data.avatar = `${baseURL}/${avatar}`
       }
-      console.log(data, 'data')
       return {
         ...state,
         currentUser: data || {},
