@@ -5,13 +5,11 @@ export default {
 
   state: {
     counts:{}
-    // tags: [],
   },
 
   effects: {
     *getAllWell({callBack}, { call }) {
       const response = yield call(getAllWell);
-      // console.log(response,'response')
     if(callBack) callBack(response);
     },
 
@@ -37,7 +35,6 @@ export default {
     if(callBack) callBack(response);
     },
     *getHistory({payload,callBack}, { call }) {
-      console.log(payload,'payload')
       const response = yield call(getHistory,payload);
      if(callBack) callBack(response);
     },
