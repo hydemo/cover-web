@@ -1,11 +1,5 @@
 import axios from '@/utils/request';
-
-// export async function query() {
-//   return axios({
-//     url: '/api/users',
-//     method: 'GET',
-//   });
-// }
+import md5 from 'md5'
 
 export async function queryCurrent() {
   return axios({
@@ -15,10 +9,19 @@ export async function queryCurrent() {
 }
 
 export async function addUser(query) {
+  const password = md5(query.password)
   return axios({
     url: '/user',
     method: 'POST',
-    data: query,
+    data: { ...query, password },
+  });
+}
+
+export async function updateUser(query) {
+  return axios({
+    url: `/user/${query.id}`,
+    method: 'PUT',
+    data: query.data,
   });
 }
 
@@ -30,9 +33,9 @@ export async function queryUsers(query) {
   });
 }
 
-export async function updateUser(query) {
+export async function updateMe(query) {
   return axios({
-    url: `/user/${query.id}`,
+    url: `/user/${query.id}/me`,
     method: 'PUT',
     data: query.data,
   });
@@ -46,12 +49,22 @@ export async function removeUser(query) {
   });
 }
 
+
 export async function resetPassword(query) {
+  const password = md5(query.password)
   return axios({
     url: `/user/${query.id}/password`,
     method: 'PUT',
-    data: {
-      password: query.password,
-    },
+    data: { password },
+  });
+}
+
+export async function resetPasswordMe(query) {
+  const newPassword = md5(query.data.newPassword)
+  const oldPassword = md5(query.data.oldPassword)
+  return axios({
+    url: `/user/${query.id}/password/me`,
+    method: 'PUT',
+    data: { ...query.data, newPassword, oldPassword },
   });
 }

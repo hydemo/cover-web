@@ -2,6 +2,7 @@ import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
+import { queryWarningCounts } from '@/services/warning';
 
 const { check } = Authorized;
 
@@ -93,6 +94,7 @@ export default {
   state: {
     menuData: [],
     breadcrumbNameMap: {},
+    unreadCount: 0
   },
 
   effects: {
@@ -104,6 +106,15 @@ export default {
         type: 'save',
         payload: { menuData, breadcrumbNameMap },
       });
+    },
+    *getUnreadCount({ payload }, { call, put }) {
+      const response = yield call(queryWarningCounts, payload);
+      if (response) {
+        yield put({
+          type: 'save',
+          payload: { unreadCount: response.data },
+        });
+      }
     },
   },
 

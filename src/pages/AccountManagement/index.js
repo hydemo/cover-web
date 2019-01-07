@@ -12,7 +12,7 @@ import {
 } from 'antd';
 /* eslint-disable no-underscore-dangle */
 import BaseTable from '@/components/BaseTable';
-import Location from '@/components/Location'
+import Location from '@/components/Location';
 import styles from './Index.less';
 
 const nameSpace = "accountmanagement"
@@ -58,7 +58,10 @@ const CreateForm = Form.create()(props => {
             initialValue: record.role,
           })(
             <Select placeholder="请选择" style={{ width: '100%' }}>
-              {role.map((r, key) => key !== 0 ? <Option value={key}>{r}</Option> : '')}
+              {role.map((r, key) => key !== 0 ?
+                <Option value={key} key={r}> {r}</Option> :
+                <Option disabled value={key} key={r}> {r}</Option>
+              )}
             </Select>
           )
         }
@@ -155,26 +158,26 @@ class TableList extends PureComponent {
     });
   };
 
-  onPasswordChange = e => {
-    this.setState({ password: e.target.value })
-  }
 
   onPasswordReset = () => {
-    const { dispatch } = this.props
-    const { record, password } = this.state
-    dispatch({
-      type: `${nameSpace}/password`,
-      payload: {
-        id: record._id,
-        password,
-      },
-    });
-    this.setState({ modalVisble: false })
+    const { dispatch, form } = this.props
+    const { record } = this.state
+    form.validateFields((err, values) => {
+      if (err) return;
+      dispatch({
+        type: `${nameSpace}/password`,
+        payload: {
+          id: record._id,
+          password: values.password,
+        },
+      });
+      this.setState({ modalVisble: false })
+    })
   }
 
   ExtendAction = (props) => {
     const { record } = props
-    return (<a onClick={() => this.setState({ record, modalVisble: true })}> 修改密码</a>)
+    return (<a onClick={() => this.setState({ record, modalVisble: true })} style={{ fontSize: '14px' }}> 修改密码</a>)
   }
 
 
@@ -221,6 +224,7 @@ class TableList extends PureComponent {
   }
 
   render() {
+    const { form } = this.props
     const { modalVisble } = this.state;
     return (
       <Card bordered={false}>
@@ -235,13 +239,18 @@ class TableList extends PureComponent {
           />
         </div>
         <Modal
+          destroyOnClose
           title="修改密码"
           visible={modalVisble}
           onOk={this.onPasswordReset}
           onCancel={() => this.setState({ modalVisble: false })}
         >
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
-            <Input onChange={this.onPasswordChange} placeholder="请输入" />
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+            {
+              form.getFieldDecorator('name', {
+                rules: [{ required: true, message: '请输入密码' }],
+              })(<Input placeholder="请输入" />)
+            }
           </FormItem>
         </Modal>
       </Card>

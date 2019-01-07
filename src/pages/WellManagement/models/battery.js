@@ -1,9 +1,10 @@
-import { querySims, removeSim, addSim, updateSim } from '@/services/sim';
+import { getHistoryPage } from '@/services/monitor';
 
 export default {
-  namespace: 'simList',
+  namespace: 'battery',
 
   state: {
+    record: {},
     data: {
       list: [],
       pagination: {
@@ -17,38 +18,11 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(querySims, payload);
+      const response = yield call(getHistoryPage, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-    },
-    *add({ payload, callback }, { call, put }) {
-      yield call(addSim, payload);
-      const response = yield call(querySims, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      yield call(removeSim, payload);
-      const response = yield call(querySims, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *update({ payload, callback }, { call, put }) {
-      yield call(updateSim, payload);
-      const response = yield call(querySims, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
     },
     *setPagination({ payload, callback }, { put }) {
       yield put({
@@ -85,6 +59,7 @@ export default {
         ...state,
         data,
       };
-    }
+    },
+
   },
 };

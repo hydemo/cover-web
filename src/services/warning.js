@@ -23,3 +23,11 @@ export async function cancelWarning(query) {
   });
 }
 
+export async function queryWarningCounts() {
+  return axios({
+    url: `/warning/unhandle`,
+    method: 'GET',
+  });
+}
+
+

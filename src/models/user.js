@@ -1,4 +1,5 @@
-import { query as queryUsers, queryCurrent, updateCurrent } from '@/services/user';
+import { query as queryUsers, queryCurrent, updateMe, resetPasswordMe } from '@/services/user';
+import { baseURL } from '@/utils/config'
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -30,8 +31,8 @@ export default {
         if (callback) callback()
       }
     },
-    *updateCurrent({ callback, payload }, { call, put }) {
-      const response = yield call(updateCurrent, payload);
+    *updateMe({ callback, payload }, { call, put }) {
+      const response = yield call(updateMe, payload);
       if (response) {
         yield put({
           type: 'saveCurrentUser',
@@ -40,6 +41,12 @@ export default {
         reloadAuthorized();
         if (callback) callback()
       }
+    },
+
+    *resetPassword({ callback, payload }, { call }) {
+      const response = yield call(resetPasswordMe, payload);
+      if (callback && response) callback()
+
     },
   },
 
@@ -52,9 +59,14 @@ export default {
     },
     saveCurrentUser(state, { payload }) {
       setAuthority(payload.currentAuthority);
+      const { avatar } = payload.response.data
+      const { data } = payload.response
+      if (avatar) {
+        data.avatar = `${baseURL}/${avatar}`
+      }
       return {
         ...state,
-        currentUser: payload.response.data || {},
+        currentUser: data || {},
       };
     },
     changeNotifyCount(state, { payload }) {

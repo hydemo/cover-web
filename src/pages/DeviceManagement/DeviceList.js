@@ -148,7 +148,7 @@ class TableList extends PureComponent {
     {
       title: '设备编号',
       dataIndex: 'deviceSn',
-      key:'deviceSn',
+      key: 'deviceSn',
     },
     {
       title: '设备名称',
@@ -180,6 +180,11 @@ class TableList extends PureComponent {
       title: '使用状态',
       dataIndex: 'status',
       key: 'status',
+    },
+    {
+      title: 'SIM卡号',
+      dataIndex: 'simId.cardNumber',
+      key: 'simId.cardNumber',
     },
   ];
 
@@ -259,7 +264,7 @@ class TableList extends PureComponent {
           </Menu>
         }
       >
-        <a>
+        <a style={{ fontSize: '14px' }}>
           更多 <Icon type="down" />
         </a>
       </Dropdown> :

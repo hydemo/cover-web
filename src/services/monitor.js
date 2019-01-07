@@ -45,12 +45,15 @@ export async function getWarnsCount() {
 
 export async function getHistory(query) {
   return axios({
+    url: `/data/${query.type}/well/${query.id}/all`,
+    method: 'GET',
+  });
+}
+
+export async function getHistoryPage(query) {
+  return axios({
     url: `/data/${query.type}/well/${query.id}`,
     method: 'GET',
-    params:{
-      offset:query.offset,
-      limit:query.limit,
-    }
   });
 }
 // export async function queryCurrent() {

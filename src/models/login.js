@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import cookies from 'js-cookie';
 import { stringify } from 'qs';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
+import fakeAccountLogin from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -47,17 +47,13 @@ export default {
       }
     },
 
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
-    },
-
     *logout(_, { put }) {
       cookies.remove('access_token')
       yield put({
         type: 'changeLoginStatus',
         payload: {
           status: false,
-          currentAuthority: 'Admin',
+          currentAuthority: 'Guest',
         },
       });
       reloadAuthorized();
@@ -74,7 +70,6 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      console.log(payload, 'payload')
       setAuthority(payload.currentAuthority);
       return {
         ...state,

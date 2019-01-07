@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Button, message,Tooltip } from 'antd';
-import {  WaterWave,   MiniProgress } from '@/components/Charts';
+import { Row, Col, Card, Button, message, Tooltip } from 'antd';
+import { WaterWave, MiniProgress } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import axios from 'axios';
 import Authorized from '@/utils/Authorized';
@@ -44,8 +44,8 @@ class Monitor extends PureComponent {
     this.state = {
       wellData: {}
     };
-    this.timer=null;
-    this.monitorChart=null;
+    this.timer = null;
+    this.monitorChart = null;
     this.resize.bind(this);
   }
 
@@ -55,16 +55,15 @@ class Monitor extends PureComponent {
 
   componentDidMount() {
     this.getCity();
-  this.screenChange();
-   setTimeout(()=>
-   {
-    const leftTopDiv= this.leftTopDiv.clientHeight;
-    const rightDownDiv= this.rightDownDiv.clientHeight;
-    const rightTopDiv= this.rightTopDiv.clientHeight;
-    const height=255+rightTopDiv+rightDownDiv-leftTopDiv-80-24;
-     this.setState({mapheight:height})
-    },10)
-   
+    this.screenChange();
+    setTimeout(() => {
+      const leftTopDiv = this.leftTopDiv.clientHeight;
+      const rightDownDiv = this.rightDownDiv.clientHeight;
+      const rightTopDiv = this.rightTopDiv.clientHeight;
+      const height = 255 + rightTopDiv + rightDownDiv - leftTopDiv - 80 - 24;
+      this.setState({ mapheight: height })
+    }, 10)
+
     this.fetchCounts();
     this.timer = setInterval(() => this.fetchCounts(), 1000 * 60 * 2);
     const { AMap } = window;
@@ -116,26 +115,26 @@ class Monitor extends PureComponent {
     if (this.timer) {
       clearInterval(this.timer)
     }
-   window.removeEventListener('resize',this.resize);
+    window.removeEventListener('resize', this.resize);
   }
 
-  getCity=()=>{
-    axios.get('https://restapi.amap.com/v3/config/district?key=2df64031affa2bcb7370bbc93591df60&subdistrict=3').then((response) => 
-    {
-    console.log(response);
-  })
-  .catch((error) => {console.log(error);
-  });
+  getCity = () => {
+    axios.get('https://restapi.amap.com/v3/config/district?key=2df64031affa2bcb7370bbc93591df60&subdistrict=3').then((response) => {
+      console.log(response);
+    })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
-  resize=()=>{
-     setTimeout(()=>{
-      const leftTopDiv= this.leftTopDiv.clientHeight;
-      const rightDownDiv= this.rightDownDiv.clientHeight;
-      const rightTopDiv= this.rightTopDiv.clientHeight;
-      const height=255+rightTopDiv+rightDownDiv-leftTopDiv-80-24;
-       this.setState({mapheight:height})
-     },10)
+  resize = () => {
+    setTimeout(() => {
+      const leftTopDiv = this.leftTopDiv.clientHeight;
+      const rightDownDiv = this.rightDownDiv.clientHeight;
+      const rightTopDiv = this.rightTopDiv.clientHeight;
+      const height = 255 + rightTopDiv + rightDownDiv - leftTopDiv - 80 - 24;
+      this.setState({ mapheight: height })
+    }, 10)
   }
 
   // 构建自定义信息窗体
@@ -167,27 +166,28 @@ class Monitor extends PureComponent {
     nav.onclick = this.nav;
     return info;
   }
- 
-   closeInfoWindow=() => {
-     this.map.clearInfoWindow();
-   }
 
-   screenChange=() =>{
-    window.addEventListener('resize', this.resize);}
+  closeInfoWindow = () => {
+    this.map.clearInfoWindow();
+  }
 
-   getWarnType=(status)=>{
-      if(status){
-        const {
-          batteryLevel,coverIsOpen,gasLeak
-        }=status
-        if( batteryLevel<20){return 1};
-        if( gasLeak){return 2};
-        if(coverIsOpen){return 3};
-      }
-      return 0;
-   }
+  screenChange = () => {
+    window.addEventListener('resize', this.resize);
+  }
 
-   nav=() => {
+  getWarnType = (status) => {
+    if (status) {
+      const {
+        batteryLevel, coverIsOpen, gasLeak
+      } = status
+      if (batteryLevel < 20) { return 1 };
+      if (gasLeak) { return 2 };
+      if (coverIsOpen) { return 3 };
+    }
+    return 0;
+  }
+
+  nav = () => {
     const { AMap } = window;
     const { map } = this;
     map.plugin('AMap.Geolocation', () => {
@@ -246,11 +246,11 @@ class Monitor extends PureComponent {
       callBack: (r) => {
         if (r) {
           const data = r;
-          const NewData=[];
-          console.log(r,'datar')
-          
+          const NewData = [];
+          console.log(r, 'datar')
+
           for (let i = 0; i < data.length; i += 1) {
-            if(data[i].longitude&&data[i].latitude){
+            if (data[i].longitude && data[i].latitude) {
               data[i].lnglat = [data[i].longitude, data[i].latitude];
               data[i].name = data[i].wellSN;
               data[i].id = i;
@@ -262,7 +262,7 @@ class Monitor extends PureComponent {
               NewData.push(data[i])
             }
           }
-        
+
           this.massMarks.setData(NewData); // 将数组设置到 massMarks 图层
           this.massMarks.setMap(this.map); // 将 massMarks 添加到地图实例
         }
@@ -281,13 +281,13 @@ class Monitor extends PureComponent {
     return (
       <GridContent>
         <Row gutter={24}>
-       
+
           <Col xl={18} lg={24} md={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
             <Card
               title={
                 <div
                   className={styles.headers}
-                  ref={(node)=>{this.leftTopDiv=node}}
+                  ref={(node) => { this.leftTopDiv = node }}
                 >
                   <div className={styles.headerleft}>
                     <Tooltip title="井盖漏气个数">
@@ -347,27 +347,27 @@ class Monitor extends PureComponent {
               }
               bordered={false}
             >
-              <div className={styles.mapChart} style={{height:this.state.mapheight}}>
-                <div className={styles.myMap} id='myMap' style={{height:this.state.mapheight}} />
+              <div className={styles.mapChart} style={{ height: this.state.mapheight }}>
+                <div className={styles.myMap} id='myMap' style={{ height: this.state.mapheight }} />
               </div>
             </Card>
           </Col>
-          
-          <Col xl={6} lg={24} md={24} sm={24} xs={24} ref={(node)=>{this.rightDiv=node}}>
+
+          <Col xl={6} lg={24} md={24} sm={24} xs={24} ref={(node) => { this.rightDiv = node }}>
             <Card
               title="窨井基本状态"
               style={{ marginBottom: 24 }}
               bordered={false}
             >
-              <div ref={(node)=>{this.rightTopDiv=node}}>
-               
+              <div ref={(node) => { this.rightTopDiv = node }}>
+
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>电量</div>
                   <div className={styles.minibar}><MiniProgress percent={batteryLevel / 255 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(batteryLevel).toFixed(1)}`}</div>
                 </div>
                 <div className={styles.wellInfoItem}>
-                  <div style={{ width:  '6em' }}>超声波频率</div>
+                  <div style={{ width: '6em' }}>超声波频率</div>
                   <div className={styles.minibar}><MiniProgress percent={frequency / 255 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
                 </div>
@@ -377,12 +377,12 @@ class Monitor extends PureComponent {
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(amplitude).toFixed(1)}`}</div>
                 </div>
                 <div className={styles.wellInfoItem}>
-                  <div style={{ width:  '6em' }}>距离:</div>
+                  <div style={{ width: '6em' }}>距离:</div>
                   <div className={styles.minibar}><MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width:'4em', paddingLeft: '10%' }}>{`${(distance).toFixed(1)}`}</div>
+                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(distance).toFixed(1)}`}</div>
                 </div>
                 <div className={styles.wellInfoItem}>
-                  <div style={{ width:  '6em' }}>电位</div>
+                  <div style={{ width: '6em' }}>光强</div>
                   <div className={styles.minibar}><MiniProgress percent={photoresistor / 255 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
                 </div>
@@ -394,28 +394,30 @@ class Monitor extends PureComponent {
               bodyStyle={{ textAlign: 'center' }}
               bordered={false}
             >
-              <div ref={(node)=>{this.rightDownDiv=node}}>
+              <div ref={(node) => { this.rightDownDiv = node }}>
                 <div style={{ textAlign: 'center' }} className={styles.wave}>
                   <WaterWave
                     height={161}
                     title="电池电量"
                     percent={(batteryLevel / 255 * 100).toFixed(0)}
-                    style={{color: 'red'}}
+                    style={{ color: 'red' }}
                   />
                 </div>
                 <div
                   className={styles.status}
-                  ref={(node) =>{ this.monitorChart = node}}
+                  ref={(node) => { this.monitorChart = node }}
                 >
-                  {gasLeak ? <img className={styles.chart} src={leakWarn} alt='' /> :
-                  <img src={unleak} className={styles.chart} alt='' />}
-                  {coverIsOpen ? <img className={styles.chart} src={coveropen} alt='' /> : 
-                  <img src={coverok} className={styles.chart} alt='' />}
+                  {gasLeak ?
+                    <img className={styles.chart} src={leakWarn} alt='' /> :
+                    <img src={unleak} className={styles.chart} alt='' />}
+                  {coverIsOpen ?
+                    <img className={styles.chart} src={coveropen} alt='' /> :
+                    <img src={coverok} className={styles.chart} alt='' />}
                 </div>
               </div>
             </Card>
           </Col>
-       
+
         </Row>
 
         <Row gutter={24}>
@@ -425,7 +427,7 @@ class Monitor extends PureComponent {
               bordered={false}
               className={styles.pieCard}
             >
-              <Data chartType='battery' type='batteryLevel' id={this.state.wellData? this.state.wellData._id:''} />
+              <Data chartType='battery' type='batteryLevel' id={this.state.wellData ? this.state.wellData._id : ''} />
             </Card>
           </Col>
           <Col xl={12} lg={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
@@ -434,7 +436,7 @@ class Monitor extends PureComponent {
             <Card
               title="超声波振幅趋势图"
             >
-              <Data chartType='audioFre' type='amplitude' id={this.state.wellData? this.state.wellData._id:''}  />
+              <Data chartType='audioFre' type='amplitude' id={this.state.wellData ? this.state.wellData._id : ''} />
             </Card>
           </Col>
 
@@ -444,7 +446,7 @@ class Monitor extends PureComponent {
               bodyStyle={{ textAlign: 'center', fontSize: 0 }}
               bordered={false}
             >
-              <Data chartType='audioFre' type='frequency' id={this.state.wellData? this.state.wellData._id:''}  />
+              <Data chartType='audioFre' type='frequency' id={this.state.wellData ? this.state.wellData._id : ''} />
             </Card>
           </Col>
 
@@ -455,17 +457,17 @@ class Monitor extends PureComponent {
               bodyStyle={{ textAlign: 'center', fontSize: 0 }}
               bordered={false}
             >
-              <Data chartType='wellCover' type='distance' id={this.state.wellData? this.state.wellData._id:''}  />
+              <Data chartType='wellCover' type='distance' id={this.state.wellData ? this.state.wellData._id : ''} />
             </Card>
           </Col>
 
           <Col xl={12} lg={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
             <Card
-              title="电位趋势图"
+              title="光强趋势图"
               bodyStyle={{ textAlign: 'center', fontSize: 0 }}
               bordered={false}
             >
-              <Data chartType='wellCover' type='photoresistor' id={this.state.wellData? this.state.wellData._id:''}  />
+              <Data chartType='wellCover' type='photoresistor' id={this.state.wellData ? this.state.wellData._id : ''} />
             </Card>
           </Col>
         </Row>
