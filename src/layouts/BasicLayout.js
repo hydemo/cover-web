@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Layout } from 'antd';
+import { Layout, LocaleProvider } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -8,8 +8,8 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
 import logo from '../assets/logo.png';
 import Footer from './Footer';
 import Header from './Header';
@@ -119,19 +119,19 @@ class BasicLayout extends React.PureComponent {
     return getAuthority(pathname, routeData);
   };
 
-  getPageTitle = (pathname, breadcrumbNameMap) => {
-    const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
+  // getPageTitle = (pathname, breadcrumbNameMap) => 
+  // const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
-    if (!currRouterData) {
-      return '智能窨井管理系统';
-    }
-    const pageName = formatMessage({
-      id: currRouterData.locale || currRouterData.name,
-      defaultMessage: currRouterData.name,
-    });
+  // if (!currRouterData) {
+  // '智能窨井管理系统'
+  // }
+  // const pageName = formatMessage({
+  //   id: currRouterData.locale || currRouterData.name,
+  //   defaultMessage: currRouterData.name,
+  // });
 
-    return `${pageName} - 智能窨井管理系统`;
-  };
+  // return `${pageName} - 智能窨井管理系统`;
+  // ;
 
   getLayoutStyle = () => {
     const { fixSiderbar, isMobile, collapsed, layout } = this.props;
@@ -168,7 +168,6 @@ class BasicLayout extends React.PureComponent {
       location: { pathname },
       isMobile,
       menuData,
-      breadcrumbNameMap,
       route: { routes },
       fixedHeader,
       unreadCount,
@@ -213,14 +212,16 @@ class BasicLayout extends React.PureComponent {
     );
     return (
       <React.Fragment>
-        <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-          <ContainerQuery query={query}>
-            {params => (
-              <Context.Provider value={this.getContext()}>
-                <div className={classNames(params)}>{layout}</div>
-              </Context.Provider>
-            )}
-          </ContainerQuery>
+        <DocumentTitle title='智能窨井管理系统'>
+          <LocaleProvider locale={zhCN}>
+            <ContainerQuery query={query}>
+              {params => (
+                <Context.Provider value={this.getContext()}>
+                  <div className={classNames(params)}>{layout}</div>
+                </Context.Provider>
+              )}
+            </ContainerQuery>
+          </LocaleProvider>
         </DocumentTitle>
         <Suspense fallback={<PageLoading />}>{this.renderSettingDrawer()}</Suspense>
       </React.Fragment>

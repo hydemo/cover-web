@@ -85,7 +85,7 @@ export default {
       };
     },
     pagination(state, action) {
-      const { pagination } = state;
+      const { data: { pagination } } = state;
       const data = {
         list: action.payload.list,
         pagination: {

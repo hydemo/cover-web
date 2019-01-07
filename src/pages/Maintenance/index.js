@@ -54,16 +54,17 @@ class TableList extends PureComponent {
       key: 'principal',
     },
     {
+      title: '接警人',
+      dataIndex: 'creatorId.name',
+      key: 'creator',
+    },
+    {
       title: '发生时间',
       dataIndex: 'occurTime',
       key: 'occurTime',
       render: (text, record) => moment(record.occurTime).format('YYYY-MM-DD')
     },
-    {
-      title: '地点',
-      dataIndex: 'location',
-      key: 'location',
-    },
+
     {
       title: '状态',
       dataIndex: 'status',
@@ -73,7 +74,7 @@ class TableList extends PureComponent {
     },
     {
       title: '操作',
-      width: 150,
+      width: 80,
       key: 'action',
       render: (text, record) =>
         <a onClick={() => this.onClick(record)}>详情</a>
@@ -171,7 +172,7 @@ class TableList extends PureComponent {
   onClick = record => {
     const { dispatch } = this.props
     dispatch({
-      type: `${nameSpace}/record`,
+      type: `${nameSpace}/setRecord`,
       payload: record,
     })
     router.push('/maintenance/maintenanceprofile')
@@ -235,7 +236,7 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <Table
-            rowKey={(record)=>record._id}
+            rowKey={(record) => record._id}
             loading={loading}
             dataSource={data.list}
             pagination={pagination}

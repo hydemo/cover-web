@@ -16,10 +16,12 @@ const plugins = [
       },
       locale: {
         enable: true, // default false
+        antd: true,
         default: 'zh-CN', // default zh-CN
-        baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
+        // baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
       },
       dynamicImport: {
+        webpackChunkName: true,
         loadingComponent: './components/PageLoading/index',
       },
       // pwa: {
@@ -73,7 +75,7 @@ export default {
     javascriptEnabled: true,
   },
   disableRedirectHoist: true,
-  // hash: true,
+  hash: true,
   cssLoaderOptions: {
     modules: true,
     getLocalIdent: (context, localIdentName, localName) => {
@@ -110,11 +112,11 @@ export default {
             uglifyOptions: {
               compress: {
                 // 删除所有的 `console` 语句
-                drop_console: true,
+                // drop_console: true,
               },
               output: {
                 // 最紧凑的输出
-                beautify: true,
+                beautify: false,
                 // 删除所有的注释
                 comments: false,
               },

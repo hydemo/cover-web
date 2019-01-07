@@ -51,6 +51,14 @@ const CreateForm = Form.create()(props => {
             }
           </FormItem> : ''
       }
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="联系电话">
+        {
+          form.getFieldDecorator('phone', {
+            rules: [{ required: false, message: '请输入联系电话' }],
+            initialValue: record.phone,
+          })(<Input placeholder="请输入" />)
+        }
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="权限">
         {
           form.getFieldDecorator('role', {
@@ -92,6 +100,11 @@ class TableList extends PureComponent {
       title: '邮箱',
       key: 'email',
       dataIndex: 'email',
+    },
+    {
+      title: '联系方式',
+      dataIndex: 'phone',
+      key: 'phone',
     },
     {
       title: '权限',
@@ -231,11 +244,14 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            {...this.props}
+            add
+            update
+            remove
             columns={this.columns}
             CreateForm={CreateForm}
             nameSpace={nameSpace}
             ExtendAction={this.ExtendAction}
+            {...this.props}
           />
         </div>
         <Modal
@@ -245,9 +261,9 @@ class TableList extends PureComponent {
           onOk={this.onPasswordReset}
           onCancel={() => this.setState({ modalVisble: false })}
         >
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
             {
-              form.getFieldDecorator('name', {
+              form.getFieldDecorator('password', {
                 rules: [{ required: true, message: '请输入密码' }],
               })(<Input placeholder="请输入" />)
             }

@@ -210,6 +210,19 @@ class TableList extends PureComponent {
     });
   };
 
+  fetch = () => {
+    const { dispatch } = this.props;
+    const { result: { data } } = this.props;
+    const { pagination } = data;
+    dispatch({
+      type: `${nameSpace}/fetch`,
+      payload: {
+        offset: pagination.current,
+        limit: pagination.pageSize,
+      }
+    });
+  }
+
   handleSearch = e => {
     e.preventDefault();
 
@@ -342,9 +355,9 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            add={role && role < 2}
-            update={role && role < 2}
-            remove={role && role < 2}
+            add={role && role < 3}
+            update={role && role < 3}
+            remove={role && role < 3}
             {...this.props}
             columns={this.columns}
             CreateForm={CreateForm}

@@ -21,8 +21,7 @@ class BaseTable extends PureComponent {
   };
 
   componentDidMount() {
-    const { columns, update = true, remove = true, ExtendAction } = this.props;
-
+    const { columns, update = true, remove = true, ExtendAction, dispatch, nameSpace, selectCondition } = this.props;
     const action =
     {
       title: '操作',
@@ -46,10 +45,16 @@ class BaseTable extends PureComponent {
     if (update || remove || ExtendAction) {
       columns.push(action)
     }
-    this.fetch()
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: { ...selectCondition }
+      },
+    })
+    this.fetch({ ...selectCondition })
   }
 
-  fetch = () => {
+  fetch = (search) => {
     const { result: { data }, dispatch, nameSpace } = this.props;
     const { pagination } = data;
     dispatch({
@@ -57,7 +62,7 @@ class BaseTable extends PureComponent {
       payload: {
         offset: pagination.current,
         limit: pagination.pageSize,
-        search: pagination.search,
+        search: search || pagination.search,
       }
     });
   }

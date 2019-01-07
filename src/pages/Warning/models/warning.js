@@ -4,6 +4,7 @@ export default {
   namespace: 'warning',
 
   state: {
+    record: {},
     data: {
       list: [],
       pagination: {
@@ -11,6 +12,7 @@ export default {
         showQuickJumper: true,
         current: 1,
         pageSize: 10,
+        search: {}
       }
     },
   },
@@ -40,6 +42,13 @@ export default {
       });
       if (callback) callback();
     },
+    *setRecord({ payload, callback }, { put }) {
+      yield put({
+        type: 'record',
+        payload,
+      });
+      if (callback) callback();
+    },
   },
   reducers: {
     save(state, action) {
@@ -55,7 +64,7 @@ export default {
       };
     },
     pagination(state, action) {
-      const { pagination } = state;
+      const { data: { pagination } } = state;
       const data = {
         list: action.payload.list,
         pagination: {

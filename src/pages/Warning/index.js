@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import {
   Row,
   Col,
@@ -40,7 +41,12 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '异常类型',
+      title: '窨井编号',
+      dataIndex: 'wellId.wellSN',
+      key: 'wellSN',
+    },
+    {
+      title: '告警类型',
       dataIndex: 'warningType',
       key: 'warningType',
       render: (text, record) => type[record.warningType],
@@ -68,8 +74,9 @@ class TableList extends PureComponent {
         return '关闭';
       },
 
-    }, {
-      title: '是否泄气',
+    },
+    {
+      title: '是否漏气',
       dataIndex: 'gasLeak',
       key: 'gasLeak',
       render: (text, record) => {
@@ -80,13 +87,41 @@ class TableList extends PureComponent {
       },
     },
     {
-      title: '是否分配',
+      title: '是否处理',
       dataIndex: 'isHandle',
       key: 'isHandle',
       render: (text, record) => record.isHandle ? '是' : '否'
 
     },
   ]
+
+  actionAllText =
+    {
+      title: '操作',
+      width: 200,
+      key: 'action',
+      render: (text, record) =>
+        <div>
+          {record.isHandle ?
+            <span>
+              <span style={{ marginLeft: '0', color: '#A9A9A9' }}>接警</span>
+              <Divider type="vertical" />
+              <span style={{ marginLeft: '0', color: '#A9A9A9' }}>撤警</span>
+            </span>
+            :
+            <span>
+              <a onClick={() => this.setState({ modalVisble: true, record })}>接警</a>
+              <Divider type="vertical" />
+              <Popconfirm title="确定撤警？" onConfirm={() => this.cancelWarning(record)}>
+                <a>撤警</a>
+              </Popconfirm>
+            </span>
+          }
+          <Divider type="vertical" />
+          <a onClick={() => this.onClick(record)}>详情</a>
+        </div>
+
+    };
 
   actionText =
     {
@@ -95,32 +130,26 @@ class TableList extends PureComponent {
       key: 'action',
       render: (text, record) =>
         <div>
-          {record.isHandle ?
-            <div>
-              <span style={{ color: '#A9A9A9' }}>接警</span>
-              <Divider type="vertical" />
-              <span style={{ color: '#A9A9A9' }}>撤警</span>
-            </div>
-            :
-            <div>
-              <a onClick={() => this.setState({ modalVisble: true, record })}>接警</a>
-              <Divider type="vertical" />
-              <Popconfirm title="确定撤警？" onConfirm={() => this.cancelWarning(record)}>
-                <a>撤警</a>
-              </Popconfirm>
-            </div>
-          }
-
+          <a onClick={() => this.onClick(record)}>详情</a>
         </div>
 
     };
 
 
   componentDidMount() {
+    const { dispatch } = this.props
     if (role && role < 3) {
+      this.columns.push(this.actionAllText)
+    } else {
       this.columns.push(this.actionText)
     }
-    this.fetch()
+    dispatch({
+      type: `${nameSpace}/setPagination`,
+      payload: {
+        search: {},
+      },
+    })
+    this.fetch({})
   }
 
   cancelWarning = (record) => {
@@ -134,7 +163,7 @@ class TableList extends PureComponent {
     });
   }
 
-  fetch = () => {
+  fetch = (search) => {
     const { result: { data }, dispatch } = this.props;
     const { pagination } = data;
     dispatch({
@@ -142,7 +171,7 @@ class TableList extends PureComponent {
       payload: {
         offset: pagination.current,
         limit: pagination.pageSize,
-        search: pagination.search
+        search: search || pagination.search
       }
     });
   }
@@ -217,17 +246,32 @@ class TableList extends PureComponent {
     this.setState({ user: record })
   }
 
+  onClick = record => {
+    const { dispatch } = this.props
+    dispatch({
+      type: `${nameSpace}/setRecord`,
+      payload: record,
+    })
+    router.push('/warning/warningprofile')
+  }
 
   handleOk = () => {
     const { record, user } = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type: `${nameSpace}/bind`,
-      payload: { id: record._id, userId: user._id },
-      callback: () => {
-        this.fetch()
-      }
-    });
+    if (user && user._id) {
+      const { dispatch } = this.props;
+      dispatch({
+        type: `${nameSpace}/bind`,
+        payload: { id: record._id, userId: user._id },
+        callback: () => {
+          this.fetch()
+          dispatch({
+            type: 'menu/getUnreadCount',
+            payload: {},
+          });
+        }
+      });
+    }
+
     this.setState({ modalVisble: false })
   }
 
@@ -266,11 +310,11 @@ class TableList extends PureComponent {
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="是否泄气">
+            <FormItem label="是否漏气">
               {getFieldDecorator('gasLeak')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value={0} key={0}>漏气</Option>
-                  <Option value={1} key={1}>未漏气</Option>
+                  <Option value={1} key={1}>漏气</Option>
+                  <Option value={0} key={0}>未漏气</Option>
                 </Select>
               )}
             </FormItem>
@@ -305,19 +349,20 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const { modalVisble } = this.state;
+    const { modalVisble, record = {} } = this.state;
+    const { wellId = {} } = record
     const { result: { data } = {}, loading } = this.props;
     const { pagination } = data;
     const rowSelection = {
       type: 'radio',
-      onSelect: (record) => this.onRowSelect(record),
+      onSelect: (re) => this.onRowSelect(re),
     }
     return (
       <Card bordered={false}>
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <Table
-            rowKey={(record)=>record._id}
+            rowKey={(re) => re._id}
             loading={loading}
             dataSource={data.list}
             pagination={pagination}
@@ -325,13 +370,14 @@ class TableList extends PureComponent {
             onChange={this.handleTableChange}
           />
           <Modal
+            destroyOnClose
             title="分配人员"
             visible={modalVisble}
             onOk={this.handleOk}
             onCancel={() => this.setState({ modalVisble: false })}
             width="1000px"
           >
-            <AccountTable add={false} update={false} remove={false} rowSelection={rowSelection} />
+            <AccountTable selectCondition={{ location: wellId.location, role: 2 }} ExtendAction={false} add={false} update={false} remove={false} rowSelection={rowSelection} />
           </Modal>
         </div>
       </Card>

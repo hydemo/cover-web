@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Divider } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -16,6 +17,9 @@ class DeviceProfile extends Component {
 
   render() {
     const { result: { record: device = {} } } = this.props;
+    if (!device.deviceSn) {
+      router.push('/devicemanagement/devicelist')
+    }
     const { simId: sim = {} } = device
     return (
       <PageHeaderWrapper title="设备详情">

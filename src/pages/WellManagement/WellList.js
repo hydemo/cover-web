@@ -51,6 +51,14 @@ const CreateForm = Form.create()(props => {
           })(<Input placeholder="请输入" />)
         }
       </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="井盖材质">
+        {
+          form.getFieldDecorator('coverMaterial', {
+            rules: [{ required: false, message: '请输入井盖材质' }],
+            initialValue: record.wellCaliber ? Number(record.coverMaterial) : null,
+          })(<InputNumber step={0.1} placeholder="请输入" />)
+        }
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="井壁口径">
         {
           form.getFieldDecorator('wellCaliber', {
@@ -92,22 +100,6 @@ const CreateForm = Form.create()(props => {
         }
       </FormItem>
       <Location record={record} form={form} />
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="累计流量">
-        {
-          form.getFieldDecorator('tatalFlow', {
-            rules: [{ required: false, message: '请输入累计流量' }],
-            initialValue: record.tatalFlow,
-          })(<Input placeholder="请输入" />)
-        }
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="累计资费">
-        {
-          form.getFieldDecorator('tatalTariff', {
-            rules: [{ required: false, message: '请输入累计资费' }],
-            initialValue: record.tatalTariff,
-          })(<Input placeholder="请输入" />)
-        }
-      </FormItem>
     </div>
 
   )
@@ -341,9 +333,9 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            add={role && role < 2}
-            update={role && role < 2}
-            remove={role && role < 2}
+            add={role && role < 3}
+            update={role && role < 3}
+            remove={role && role < 3}
             formValues={formValues}
             columns={this.columns}
             CreateForm={CreateForm}

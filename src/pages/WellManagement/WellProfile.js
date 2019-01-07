@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Card, Divider } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -21,6 +22,9 @@ class WellProfile extends Component {
     const { result: { record: well = {} } } = this.props;
     if (!well.deviceId) {
       delete well.deviceId
+    }
+    if (!well.wellSN) {
+      router.push('/wellmanagement/welllist')
     }
     const { deviceId: device = {} } = well
     const { ownerId: owner = {} } = well
@@ -120,6 +124,7 @@ class WellProfile extends Component {
           <DescriptionList size="large" title="窨井信息" style={{ marginBottom: 32 }}>
             <Description term="窨井编号">{well.wellSN}</Description>
             <Description term="窨井类型">{well.wellType}</Description>
+            <Description term="井盖材质">{well.coverMaterial}</Description>
             <Description term="井壁口径">{well.wellCaliber}</Description>
             <Description term="井盖口径">{well.coverCaliber}</Description>
             <Description term="窨井深度">{well.wellDepth}</Description>

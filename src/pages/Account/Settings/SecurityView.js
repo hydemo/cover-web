@@ -62,7 +62,7 @@ class SecurityView extends Component {
           )}
         />
         <Modal
-          title="分配人员"
+          title="修改密码"
           visible={modalVisble}
           onOk={this.handleOk}
           onCancel={() => this.setState({ modalVisble: false })}

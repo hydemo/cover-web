@@ -42,7 +42,7 @@ export default [
           },
           {
             path: '/wellmanagement/wellprofile',
-            name: 'wellprofile',
+            name: 'wellmanagement/wellprofile',
             hideInMenu: true,
             component: './WellManagement/WellProfile',
           },
@@ -66,18 +66,27 @@ export default [
           },
           {
             path: '/devicemanagement/deviceprofile',
-            name: 'deviceprofile',
+            name: 'devicemanagement/deviceprofile',
             hideInMenu: true,
             component: './DeviceManagement/DeviceProfile',
           },
         ],
       },
+
+
       // list
       {
         path: '/warning',
         icon: 'warning',
         name: 'warning',
         component: './Warning',
+      },
+      {
+        path: '/warning/warningprofile',
+        name: 'warningprofile',
+        hideInMenu: true,
+        component: './Warning/WarningProfile',
+
       },
       {
         path: '/maintenance',
