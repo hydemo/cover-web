@@ -58,12 +58,12 @@ class Monitor extends PureComponent {
     this.getCity();
     this.screenChange();
     setTimeout(() => {
-      const leftTopDiv = this.leftTopDiv.clientHeight;
-      const rightDownDiv = this.rightDownDiv.clientHeight;
-      const rightTopDiv = this.rightTopDiv.clientHeight;
+      const leftTopDiv =this.leftTopDiv? this.leftTopDiv.clientHeight:0;
+      const rightDownDiv = this.rightDownDiv?this.rightDownDiv.clientHeight:0;
+      const rightTopDiv =this.rightTopDiv? this.rightTopDiv.clientHeight:0;
       const height = 255 + rightTopDiv + rightDownDiv - leftTopDiv - 80 - 24;
       this.setState({ mapheight: height });
-      if(this.leftTopDiv.clientWidth<1100){
+      if(this.leftTopDiv&&this.leftTopDiv.clientWidth<1100){
         this.setState({ scaleRatio: this.leftTopDiv.clientWidth/1100 });
         console.log(this.leftTopDiv.clientWidth,'this.leftTopDiv.clientWidth')
       }
@@ -322,6 +322,26 @@ class Monitor extends PureComponent {
                   </div>
 
 
+                  <div className={styles.headerright} style={{fontSize:14*scaleRatio}}>
+                    <img src={wellGreen} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    正常
+                    <div style={{ width: 10*scaleRatio }} />
+                    <img src={wellRed} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    电量不足
+                    <div style={{ width: 10*scaleRatio }} />
+                    <img src={wellPurple} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    燃气泄漏
+                    <div style={{ width: 10*scaleRatio }} />
+                    <img src={wellBlue} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    井盖打开
+                  </div>
+
+                  
+
                   <div className={styles.headermiddle} style={{fontSize:14*scaleRatio}}>
                     <div style={{ width: 10*scaleRatio }} />
                     <div
@@ -371,24 +391,6 @@ class Monitor extends PureComponent {
                     <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellOpen', 3)}>  井盖打开</Button> */}
                   </div>
 
-
-                  <div className={styles.headerright} style={{fontSize:14*scaleRatio}}>
-                    <img src={wellGreen} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
-                    <div style={{ width: 10*scaleRatio }} />
-                    正常
-                    <div style={{ width: 10*scaleRatio }} />
-                    <img src={wellRed} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
-                    <div style={{ width: 10*scaleRatio }} />
-                    电量不足
-                    <div style={{ width: 10*scaleRatio }} />
-                    <img src={wellPurple} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
-                    <div style={{ width: 10*scaleRatio }} />
-                    燃气泄漏
-                    <div style={{ width: 10*scaleRatio }} />
-                    <img src={wellBlue} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
-                    <div style={{ width: 10*scaleRatio }} />
-                    井盖打开
-                  </div>
 
                 </div>
               }

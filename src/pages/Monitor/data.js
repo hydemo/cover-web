@@ -66,6 +66,7 @@ fetchHistotyData = (nextPropsId,nextPropsType) => {
   render() {
     const option = {
       title: {
+        top:20,
         text: '时间坐标折线图',
         subtext: 'dataZoom支持',
       },
