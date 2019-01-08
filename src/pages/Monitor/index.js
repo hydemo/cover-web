@@ -138,7 +138,7 @@ class Monitor extends PureComponent {
   }
 
   // 构建自定义信息窗体
-  createInfoWindow = (title, content) => {
+  createInfoWindow = (title) => {
     const info = document.createElement('div');
     info.className = 'custom-info input-card content-window-card';
 
@@ -363,12 +363,12 @@ class Monitor extends PureComponent {
 
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>电量</div>
-                  <div className={styles.minibar}><MiniProgress percent={batteryLevel / 255 * 100} strokeWidth={12} target={100} /></div>
+                  <div className={styles.minibar}><MiniProgress percent={batteryLevel / 400 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(batteryLevel).toFixed(1)}`}</div>
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>超声波频率</div>
-                  <div className={styles.minibar}><MiniProgress percent={frequency / 255 * 100} strokeWidth={12} target={100} /></div>
+                  <div className={styles.minibar}><MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
                 </div>
                 <div className={styles.wellInfoItem}>
@@ -383,7 +383,7 @@ class Monitor extends PureComponent {
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>光强</div>
-                  <div className={styles.minibar}><MiniProgress percent={photoresistor / 255 * 100} strokeWidth={12} target={100} /></div>
+                  <div className={styles.minibar}><MiniProgress percent={photoresistor / 65904 * 100} strokeWidth={12} target={100} /></div>
                   <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
                 </div>
               </div>
@@ -399,7 +399,7 @@ class Monitor extends PureComponent {
                   <WaterWave
                     height={161}
                     title="电池电量"
-                    percent={(batteryLevel / 255 * 100).toFixed(0)}
+                    percent={(batteryLevel / 400 * 100).toFixed(0)}
                     style={{ color: 'red' }}
                   />
                 </div>
