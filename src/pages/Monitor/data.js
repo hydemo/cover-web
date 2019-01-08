@@ -84,6 +84,18 @@ fetchHistotyData = (nextPropsId,nextPropsType) => {
       },
       toolbox: {
         show: true,
+        showTitle:true,
+        // position:'top',
+        top:20,
+        iconStyle:{
+          normal:{
+          textPosition:'top'
+          },
+          emphasis:{
+          textPosition:'top'
+          }
+          },
+        // orient:'vertical',
         feature: {
           mark: { show: true },
           dataView: { show: true, readOnly: false },
