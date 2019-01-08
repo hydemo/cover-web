@@ -13,16 +13,18 @@ import {
   Menu,
   Icon,
   Modal,
+  Select,
+  InputNumber
 } from 'antd';
 import moment from 'moment';
 /* eslint-disable no-underscore-dangle */
 import BaseTable from '@/components/BaseTable';
 import SimTable from '@/pages/DeviceManagement/SimList'
-
-
 import styles from './Index.less';
 
+const { Option } = Select
 const nameSpace = "deviceList"
+const status = ['绑定', '异常', '未绑定', '离线']
 
 const FormItem = Form.Item;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
@@ -37,7 +39,7 @@ const CreateForm = Form.create()(props => {
           form.getFieldDecorator('deviceSn', {
             rules: [{ required: true, message: '请输入设备编号' }],
             initialValue: record.deviceSn,
-          })(<Input placeholder="请输入" />)
+          })(<Input disabled placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="设备名称">
@@ -46,6 +48,14 @@ const CreateForm = Form.create()(props => {
             rules: [{ required: false, message: '请输入设备名称' }],
             initialValue: record.deviceName,
           })(<Input placeholder="请输入" />)
+        }
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="电量警告门限">
+        {
+          form.getFieldDecorator('batteryLimit', {
+            rules: [{ required: false, message: '请输入电量警告门限' }],
+            initialValue: record.batteryLimit,
+          })(<InputNumber min={0} max={400} placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="设备类型">
@@ -88,14 +98,6 @@ const CreateForm = Form.create()(props => {
           })(<DatePicker format="YYYY-MM-DD" placeholder="请选择" />)
         }
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="使用状态">
-        {
-          form.getFieldDecorator('status', {
-            rules: [{ required: false, message: '请输入使用状态' }],
-            initialValue: record.status,
-          })(<Input placeholder="请输入" />)
-        }
-      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="硬件装配人员">
         {
           form.getFieldDecorator('hardwareInstaller', {
@@ -120,12 +122,20 @@ const CreateForm = Form.create()(props => {
           })(<Input placeholder="请输入" />)
         }
       </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="使用状态">
+        {
+          form.getFieldDecorator('status', {
+            rules: [{ required: false, message: '请输入使用状态' }],
+            initialValue: status[record.status],
+          })(<Input disabled placeholder="请输入" />)
+        }
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="NB模组号">
         {
           form.getFieldDecorator('NBModuleNumber', {
             rules: [{ required: false, message: '请输入NB模组号' }],
             initialValue: record.NBModuleNumber,
-          })(<Input placeholder="请输入" />)
+          })(<Input disabled placeholder="请输入" />)
         }
       </FormItem>
     </div>
@@ -180,6 +190,7 @@ class TableList extends PureComponent {
       title: '使用状态',
       dataIndex: 'status',
       key: 'status',
+      render: (text, record) => status[record.status]
     },
     {
       title: 'SIM卡号',
@@ -326,6 +337,18 @@ class TableList extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('status')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value={0} key={0}>绑定</Option>
+                  <Option value={1} key={1}>异常</Option>
+                  <Option value={2} key={2}>未绑定</Option>
+                  <Option value={3} key={3}>离线</Option>
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -355,7 +378,7 @@ class TableList extends PureComponent {
         <div className={styles.tableList}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <BaseTable
-            add={role && role < 3}
+            add={false}
             update={role && role < 3}
             remove={role && role < 3}
             {...this.props}

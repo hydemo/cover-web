@@ -17,21 +17,6 @@ class Chart extends Component {
     };
    
   }
-  // data = () => {
-  //   const d = [];
-  //   let len = 0;
-  //   while (len < 200) {
-  //     d.push([
-  //       new Date(2014, 9, 1, 0, len * 10000),
-  //       (Math.random() * 30).toFixed(2) - 0,
-  //       // (Math.random() * 100).toFixed(2) - 0,
-  //       1
-        
-  //     ]);
-  //     len += 1;
-  //   }
-  //   return d;
-  // }
 
 componentDidMount(){
   this.fetchHistotyData();
