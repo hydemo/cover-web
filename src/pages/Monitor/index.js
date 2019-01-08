@@ -62,7 +62,11 @@ class Monitor extends PureComponent {
       const rightDownDiv = this.rightDownDiv.clientHeight;
       const rightTopDiv = this.rightTopDiv.clientHeight;
       const height = 255 + rightTopDiv + rightDownDiv - leftTopDiv - 80 - 24;
-      this.setState({ mapheight: height })
+      this.setState({ mapheight: height });
+      if(this.leftTopDiv.clientWidth<1100){
+        this.setState({ scaleRatio: this.leftTopDiv.clientWidth/1100 });
+        console.log(this.leftTopDiv.clientWidth,'this.leftTopDiv.clientWidth')
+      }
     }, 10)
 
     this.fetchCounts();
@@ -139,6 +143,8 @@ class Monitor extends PureComponent {
     if(this.leftTopDiv.clientWidth<1100){
 
       this.setState({ scaleRatio: this.leftTopDiv.clientWidth/1100 })
+    }else{
+      this.setState({ scaleRatio: 1 })
     }
     
   }
@@ -149,7 +155,7 @@ class Monitor extends PureComponent {
     info.className = 'custom-info input-card content-window-card';
 
     // 可以通过下面的方式修改自定义窗体的宽高
-    info.style.width = '150px';
+    info.style.width = '300px';
     // 定义顶部标题
     const top = document.createElement('div');
     const titleD = document.createElement('div');
@@ -301,13 +307,13 @@ class Monitor extends PureComponent {
                     </Tooltip>
                     <div style={{ width: 10*scaleRatio }} />
                     {leak}
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     <Tooltip title="井盖打开个数">
                       <img src={opens} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     </Tooltip>
                     <div style={{ width: 10*scaleRatio }} />
                     {open}
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     <Tooltip title="井盖低电量个数">
                       <img src={lowbatter} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     </Tooltip>
@@ -318,16 +324,40 @@ class Monitor extends PureComponent {
 
                   <div className={styles.headermiddle} style={{fontSize:14*scaleRatio}}>
                     <div style={{ width: 10*scaleRatio }} />
-                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getAllWell', 0)}>全部</div>
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div
+                      className={styles.btnDIV} 
+                      style={{padding:5*scaleRatio, fontSize:14*scaleRatio}}
+                
+                      onClick={() => this.show('getAllWell', 0)}
+                    >全部
+                    </div>
                     <div style={{ width: 10*scaleRatio }} />
-                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellBattery', 1)}>电量不足</div>
-                    <div style={{ width: 20*scaleRatio }} />
                     <div style={{ width: 10*scaleRatio }} />
-                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellLeak', 2)}>  燃气泄漏</div>
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div 
+                      className={styles.btnDIV}
+                      style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} 
+                    
+                      onClick={() => this.show('getWellBattery', 1)}
+                    >电量不足
+                    </div>
                     <div style={{ width: 10*scaleRatio }} />
-                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellOpen', 3)}>  井盖打开</div>
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div 
+                      className={styles.btnDIV} 
+                      style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} 
+                     
+                      onClick={() => this.show('getWellLeak', 2)}
+                    >  燃气泄漏
+                    </div>
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div 
+                      className={styles.btnDIV}
+                      style={{padding:5*scaleRatio, fontSize:14*scaleRatio}}
+                    
+                      onClick={() => this.show('getWellOpen', 3)}
+                    >  井盖打开
+                    </div>
                     {/* <div style={{ width: 10*scaleRatio }} />
                     <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getAllWell', 0)}>全部</Button>
                     <div style={{ width: 20*scaleRatio }} />
@@ -346,15 +376,15 @@ class Monitor extends PureComponent {
                     <img src={wellGreen} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     <div style={{ width: 10*scaleRatio }} />
                     正常
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     <img src={wellRed} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     <div style={{ width: 10*scaleRatio }} />
                     电量不足
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     <img src={wellPurple} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     <div style={{ width: 10*scaleRatio }} />
                     燃气泄漏
-                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     <img src={wellBlue} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     <div style={{ width: 10*scaleRatio }} />
                     井盖打开
@@ -380,28 +410,43 @@ class Monitor extends PureComponent {
 
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>电量</div>
-                  <div className={styles.minibar}><MiniProgress percent={batteryLevel / 400 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(batteryLevel).toFixed(1)}`}</div>
+                  <div className={styles.minibar}>
+                    <MiniProgress percent={batteryLevel / 400 * 100} strokeWidth={12} target={100} />
+                    <div className={styles.number}>{`${(batteryLevel).toFixed(1)}`}</div>
+                  </div>
+                 
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>超声波频率</div>
-                  <div className={styles.minibar}><MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
+                  <div className={styles.minibar}>
+                    <MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} />
+                    <div className={styles.number}>{`${(photoresistor).toFixed(1)}`}</div>
+                  </div>
+                  
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>超声波振幅</div>
-                  <div className={styles.minibar}><MiniProgress percent={amplitude / 255 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(amplitude).toFixed(1)}`}</div>
+                  <div className={styles.minibar}>
+                    <MiniProgress percent={amplitude / 255 * 100} strokeWidth={12} target={100} />
+                    <div className={styles.number}>{`${(amplitude).toFixed(1)}`}</div>
+                  </div>
+                  
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>距离:</div>
-                  <div className={styles.minibar}><MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(distance).toFixed(1)}`}</div>
+                  <div className={styles.minibar}>
+                    <MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} />
+                    <div className={styles.number}>{`${(distance).toFixed(1)}`}</div>
+                  </div>
+                  
                 </div>
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>光强</div>
-                  <div className={styles.minibar}><MiniProgress percent={photoresistor / 65904 * 100} strokeWidth={12} target={100} /></div>
-                  <div style={{ width: '4em', paddingLeft: '10%' }}>{`${(photoresistor).toFixed(1)}`}</div>
+                  <div className={styles.minibar}>
+                    <MiniProgress percent={photoresistor / 65904 * 100} strokeWidth={12} target={100} />
+                    <div className={styles.number}>{`${(photoresistor).toFixed(1)}`}</div>
+                  </div>
+                  
                 </div>
               </div>
             </Card>
