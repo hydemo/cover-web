@@ -42,7 +42,8 @@ class Monitor extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      wellData: {}
+      wellData: {},
+      scaleRatio:1,
     };
     this.timer = null;
     this.monitorChart = null;
@@ -135,6 +136,11 @@ class Monitor extends PureComponent {
       const height = 255 + rightTopDiv + rightDownDiv - leftTopDiv - 80 - 24;
       this.setState({ mapheight: height })
     }, 10)
+    if(this.leftTopDiv.clientWidth<1100){
+
+      this.setState({ scaleRatio: this.leftTopDiv.clientWidth/1100 })
+    }
+    
   }
 
   // 构建自定义信息窗体
@@ -275,7 +281,7 @@ class Monitor extends PureComponent {
     const { loading, monitor = {} } = this.props;
     const { counts = {} } = monitor;
     const { open = 0, battery = 0, leak = 0 } = counts;
-    const { wellData = {} } = this.state;
+    const { wellData = {},scaleRatio } = this.state;
     const { status = {} } = wellData;
     const { amplitude = 0, batteryLevel = 0, coverIsOpen = false, distance = 0, frequency = 0, gasLeak = false, photoresistor = 0 } = status;
     return (
@@ -289,57 +295,68 @@ class Monitor extends PureComponent {
                   className={styles.headers}
                   ref={(node) => { this.leftTopDiv = node }}
                 >
-                  <div className={styles.headerleft}>
+                  <div className={styles.headerleft} style={{fontSize:14*scaleRatio}}>
                     <Tooltip title="井盖漏气个数">
-                      <img src={leaks} alt="" style={{ width: 20, height: 20 }} />
+                      <img src={leaks} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     </Tooltip>
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     {leak}
-                    <div style={{ width: 20 }} />
+                    <div style={{ width: 20*scaleRatio }} />
                     <Tooltip title="井盖打开个数">
-                      <img src={opens} alt="" style={{ width: 20, height: 20 }} />
+                      <img src={opens} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     </Tooltip>
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     {open}
-                    <div style={{ width: 20 }} />
+                    <div style={{ width: 20*scaleRatio }} />
                     <Tooltip title="井盖低电量个数">
-                      <img src={lowbatter} alt="" style={{ width: 20, height: 20 }} />
+                      <img src={lowbatter} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
                     </Tooltip>
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     {battery}
                   </div>
 
 
-                  <div className={styles.headermiddle}>
-                    <div style={{ width: 10 }} />
-                    <Button type='primary' onClick={() => this.show('getAllWell', 0)}>全部</Button>
-                    <div style={{ width: 20 }} />
-                    <div style={{ width: 10 }} />
-                    <Button type='primary' onClick={() => this.show('getWellBattery', 1)}>电量不足</Button>
-                    <div style={{ width: 20 }} />
-                    <div style={{ width: 10 }} />
-                    <Button type='primary' onClick={() => this.show('getWellLeak', 2)}>  燃气泄漏</Button>
-                    <div style={{ width: 20 }} />
-                    <div style={{ width: 10 }} />
-                    <Button type='primary' onClick={() => this.show('getWellOpen', 3)}>  井盖打开</Button>
+                  <div className={styles.headermiddle} style={{fontSize:14*scaleRatio}}>
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getAllWell', 0)}>全部</div>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellBattery', 1)}>电量不足</div>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellLeak', 2)}>  燃气泄漏</div>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <div className={styles.btnDIV} style={{padding:5*scaleRatio, fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellOpen', 3)}>  井盖打开</div>
+                    {/* <div style={{ width: 10*scaleRatio }} />
+                    <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getAllWell', 0)}>全部</Button>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellBattery', 1)}>电量不足</Button>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellLeak', 2)}>  燃气泄漏</Button>
+                    <div style={{ width: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
+                    <Button style={{width: 70*scaleRatio,fontSize:14*scaleRatio}} type='primary' onClick={() => this.show('getWellOpen', 3)}>  井盖打开</Button> */}
                   </div>
 
 
-                  <div className={styles.headerright}>
-                    <img src={wellGreen} alt="" style={{ width: 20, height: 20 }} />
-                    <div style={{ width: 10 }} />
+                  <div className={styles.headerright} style={{fontSize:14*scaleRatio}}>
+                    <img src={wellGreen} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     正常
-                    <div style={{ width: 20 }} />
-                    <img src={wellRed} alt="" style={{ width: 20, height: 20 }} />
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 20*scaleRatio }} />
+                    <img src={wellRed} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     电量不足
-                    <div style={{ width: 20 }} />
-                    <img src={wellPurple} alt="" style={{ width: 20, height: 20 }} />
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 20*scaleRatio }} />
+                    <img src={wellPurple} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     燃气泄漏
-                    <div style={{ width: 20 }} />
-                    <img src={wellBlue} alt="" style={{ width: 20, height: 20 }} />
-                    <div style={{ width: 10 }} />
+                    <div style={{ width: 20*scaleRatio }} />
+                    <img src={wellBlue} alt="" style={{ width: 20*scaleRatio, height: 20*scaleRatio }} />
+                    <div style={{ width: 10*scaleRatio }} />
                     井盖打开
                   </div>
 
