@@ -55,8 +55,8 @@ const CreateForm = Form.create()(props => {
         {
           form.getFieldDecorator('coverMaterial', {
             rules: [{ required: false, message: '请输入井盖材质' }],
-            initialValue: record.wellCaliber ? Number(record.coverMaterial) : null,
-          })(<InputNumber step={0.1} placeholder="请输入" />)
+            initialValue: record.coverMaterial,
+          })(<Input placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="井壁口径">
