@@ -54,6 +54,7 @@ export async function getHistoryPage(query) {
   return axios({
     url: `/data/${query.type}/well/${query.id}`,
     method: 'GET',
+    params: query,
   });
 }
 // export async function queryCurrent() {

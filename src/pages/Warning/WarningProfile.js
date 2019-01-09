@@ -76,7 +76,7 @@ class WarningProfile extends Component {
             <Description term="井盖是否打开">{warning.coverIsOpen ? '打开' : '关闭'}</Description>
             <Description term="是否漏气">{warning.gasLeak ? '漏气' : '未漏气'}</Description>
             <Description term="是否处理">{warning.isHandle ? '是' : '否'}</Description>
-            <Description term="处理时间">{warning.handleTime ? moment(warning.handleTime).format('YYYY-MM-DD hh:mm:ss') : ''}</Description>
+            <Description term="处理时间">{warning.handleTime ? moment(warning.handleTime).format('YYYY-MM-DD HH:mm:ss') : ''}</Description>
             <Description term="处理办法">{warning.handleType || warning.handleType === 0 ? handleType[warning.handleType] : ''}</Description>
             <Description />
           </DescriptionList>
