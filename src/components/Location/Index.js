@@ -45,7 +45,6 @@ class Location extends PureComponent {
     const { form, record = {} } = this.props;
 
     const { province = [] } = this.state;
-    // console.log(province,'province')
     const options = [];
     for (let i = 0; i < province.length; i += 1) {
       const tmpProvince = {};

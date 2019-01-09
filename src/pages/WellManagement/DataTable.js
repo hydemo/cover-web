@@ -18,7 +18,9 @@ class DataTable extends PureComponent {
   };
 
   componentDidMount() {
-    this.fetch()
+    const { wellId } = this.props
+    if (wellId)
+      this.fetch()
   }
 
 

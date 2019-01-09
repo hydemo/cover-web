@@ -33,6 +33,12 @@ class WellProfile extends Component {
 
     const batteryColumns = [
       {
+        title: '上传时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      },
+      {
         title: '窨井编号',
         dataIndex: 'wellId.wellSN',
         key: 'wellSn',
@@ -49,6 +55,12 @@ class WellProfile extends Component {
       },
     ]
     const amplitudeColumns = [
+      {
+        title: '上传时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      },
       {
         title: '窨井编号',
         dataIndex: 'wellId.wellSN',
@@ -68,6 +80,12 @@ class WellProfile extends Component {
 
     const frequencyColumns = [
       {
+        title: '上传时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      },
+      {
         title: '窨井编号',
         dataIndex: 'wellId.wellSN',
         key: 'wellSn',
@@ -85,6 +103,12 @@ class WellProfile extends Component {
     ]
     const distanceColumns = [
       {
+        title: '上传时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      },
+      {
         title: '窨井编号',
         dataIndex: 'wellId.wellSN',
         key: 'wellSn',
@@ -101,6 +125,12 @@ class WellProfile extends Component {
       },
     ]
     const photoresistorColumns = [
+      {
+        title: '上传时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      },
       {
         title: '窨井编号',
         dataIndex: 'wellId.wellSN',

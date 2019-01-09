@@ -39,7 +39,6 @@ export default function request(options) {
   axiosReq.interceptors.request.use((params) => {
     if (window.location.pathname.indexOf('/login') < 0) {
       const token = cookies.get('access_token');
-      // console.log(token, 'tokentokenxx');
       if (token) {
         params.headers = {
           ...params.headers,
@@ -91,16 +90,28 @@ export default function request(options) {
       }
       // environment should not be used
       if (status === 403) {
-        router.push('/exception/403');
+        notification.error({
+          message: `请求错误 ${status}`,
+          description: '无访问权限',
+          duration: 2,
+        });
         return;
       }
       if (status <= 504 && status >= 500) {
-        router.push('/exception/500');
+        notification.error({
+          message: `请求错误 ${status}`,
+          description: '服务器异常',
+          duration: 2,
+        });
         return;
       }
       if (e.code) return;
       if (status >= 404 && status < 422) {
-        // router.push('/exception/404');
+        notification.error({
+          message: `请求错误 ${status}`,
+          description: '请求资源不存在',
+          duration: 2,
+        });
       }
     });
 }

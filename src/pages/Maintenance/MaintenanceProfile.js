@@ -72,10 +72,10 @@ class WarningProfile extends Component {
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="维修记录信息" style={{ marginBottom: 32 }}>
             <Description term="维修类型">{type[maintenance.warningType]}</Description>
-            <Description term="发生时间">{maintenance.occurTime ? moment(maintenance.occurTime).format('YYYY-MM-DD hh:mm:ss') : ''}</Description>
-            <Description term="接警时间">{maintenance.responseTime ? moment(maintenance.responseTime).format('YYYY-MM-DD hh:mm:ss') : ''}</Description>
-            <Description term="恢复时间">{maintenance.recoverTime ? moment(maintenance.recoverTime).format('YYYY-MM-DD hh:mm:ss') : ''}</Description>
-            <Description term="反馈时间">{maintenance.feedbackTime ? moment(maintenance.feedbackTime).format('YYYY-MM-DD hh:mm:ss') : ''}</Description>
+            <Description term="发生时间">{maintenance.occurTime ? moment(maintenance.occurTime).format('YYYY-MM-DD HH:mm:ss') : ''}</Description>
+            <Description term="接警时间">{maintenance.responseTime ? moment(maintenance.responseTime).format('YYYY-MM-DD HH:mm:ss') : ''}</Description>
+            <Description term="恢复时间">{maintenance.recoverTime ? moment(maintenance.recoverTime).format('YYYY-MM-DD HH:mm:ss') : ''}</Description>
+            <Description term="反馈时间">{maintenance.feedbackTime ? moment(maintenance.feedbackTime).format('YYYY-MM-DD HH:mm:ss') : ''}</Description>
             <Description term="状态">{statusType[maintenance.status]}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />

@@ -197,6 +197,7 @@ class TableList extends PureComponent {
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
+      selectCondition,
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -206,15 +207,16 @@ class TableList extends PureComponent {
               {getFieldDecorator('base')(<Input placeholder="姓名/邮箱" />)}
             </FormItem>
           </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="权限搜索">
-              {getFieldDecorator('role')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {role.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
+          {!selectCondition ?
+            <Col md={8} sm={24}>
+              <FormItem label="权限搜索">
+                {getFieldDecorator('role')(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    {role.map((r, key) => <Option value={key} key={r}>{r}</Option>)}
+                  </Select>
+                )}
+              </FormItem>
+            </Col> : ''}
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
