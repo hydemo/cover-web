@@ -28,8 +28,8 @@ const nameSpace = "wellList"
 const FormItem = Form.Item;
 const { Option } = Select;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
-const authority = JSON.parse(localStorage.getItem('cover-authority'))
-const role = roleType[authority[0]]
+let authority = JSON.parse(localStorage.getItem('cover-authority'))
+let role = roleType[authority[0]]
 
 const CreateForm = Form.create()(props => {
   const { form, record } = props;
@@ -157,6 +157,11 @@ class TableList extends PureComponent {
     },
   ];
 
+  componentDidMount() {
+    authority = JSON.parse(localStorage.getItem('cover-authority'))
+    role = roleType[authority[0]]
+  }
+
   fetch = () => {
     const { result: { data }, dispatch } = this.props;
     const { pagination } = data;
@@ -234,7 +239,7 @@ class TableList extends PureComponent {
   }
 
   ExtendAction = (props) => (
-    role && role < 2 ?
+    role && role < 3 ?
       <Dropdown
         overlay={
           <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
@@ -248,7 +253,7 @@ class TableList extends PureComponent {
           更多 <Icon type="down" />
         </a>
       </Dropdown> :
-      <a onClick={() => this.showProfile(props)}>窨井详情</a>
+      <a style={{ fontSize: '14px' }} onClick={() => this.showProfile(props)}>窨井详情</a>
   )
 
   showProfile = (props) => {

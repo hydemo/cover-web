@@ -39,7 +39,6 @@ export default function request(options) {
   axiosReq.interceptors.request.use((params) => {
     if (window.location.pathname.indexOf('/login') < 0) {
       const token = cookies.get('access_token');
-      // console.log(token, 'tokentokenxx');
       if (token) {
         params.headers = {
           ...params.headers,

@@ -18,8 +18,6 @@ class LoginPage extends Component {
   };
 
   handleSubmit = (err, values) => {
-    console.log('xxxxxxxxxxxxxxxxxx')
-    console.log(values,'value')
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
@@ -42,7 +40,6 @@ class LoginPage extends Component {
   );
 
   render() {
-    console.log('ddddddddddddddddddddddddd')
     const { login, submitting } = this.props;
     const { autoLogin } = this.state;
     return (

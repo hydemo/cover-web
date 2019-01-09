@@ -17,8 +17,8 @@ const nameSpace = "ownerList"
 
 const FormItem = Form.Item;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
-const authority = JSON.parse(localStorage.getItem('cover-authority'))
-const role = roleType[authority[0]]
+let authority = JSON.parse(localStorage.getItem('cover-authority'))
+let role = roleType[authority[0]]
 const CreateForm = Form.create()(props => {
   const { form, record } = props;
   return (
@@ -130,7 +130,10 @@ class TableList extends PureComponent {
     },
   ];
 
-
+  componentDidMount() {
+    authority = JSON.parse(localStorage.getItem('cover-authority'))
+    role = roleType[authority[0]]
+  }
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
