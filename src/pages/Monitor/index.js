@@ -413,7 +413,7 @@ class Monitor extends PureComponent {
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>电量</div>
                   <div className={styles.minibar}>
-                    <MiniProgress percent={batteryLevel / 400 * 100} strokeWidth={12} target={100} />
+                    {/* <MiniProgress percent={batteryLevel / 400 * 100} strokeWidth={12} target={100} /> */}
                     <div className={styles.number}>{`${(batteryLevel).toFixed(1)}`}</div>
                   </div>
                  
@@ -421,7 +421,7 @@ class Monitor extends PureComponent {
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>超声波频率</div>
                   <div className={styles.minibar}>
-                    <MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} />
+                    {/* <MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} /> */}
                     <div className={styles.number}>{`${(photoresistor).toFixed(1)}`}</div>
                   </div>
                   
@@ -429,7 +429,7 @@ class Monitor extends PureComponent {
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>超声波振幅</div>
                   <div className={styles.minibar}>
-                    <MiniProgress percent={amplitude / 255 * 100} strokeWidth={12} target={100} />
+                    {/* <MiniProgress percent={amplitude / 255 * 100} strokeWidth={12} target={100} /> */}
                     <div className={styles.number}>{`${(amplitude).toFixed(1)}`}</div>
                   </div>
                   
@@ -437,7 +437,7 @@ class Monitor extends PureComponent {
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>距离:</div>
                   <div className={styles.minibar}>
-                    <MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} />
+                    {/* <MiniProgress percent={distance / 255 * 100} strokeWidth={12} target={100} /> */}
                     <div className={styles.number}>{`${(distance).toFixed(1)}`}</div>
                   </div>
                   
@@ -445,7 +445,7 @@ class Monitor extends PureComponent {
                 <div className={styles.wellInfoItem}>
                   <div style={{ width: '6em' }}>光强</div>
                   <div className={styles.minibar}>
-                    <MiniProgress percent={photoresistor / 65904 * 100} strokeWidth={12} target={100} />
+                    {/* <MiniProgress percent={photoresistor / 65904 * 100} strokeWidth={12} target={100} /> */}
                     <div className={styles.number}>{`${(photoresistor).toFixed(1)}`}</div>
                   </div>
                   
