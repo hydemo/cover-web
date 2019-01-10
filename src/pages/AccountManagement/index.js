@@ -146,9 +146,8 @@ class TableList extends PureComponent {
 
     const { dispatch, form } = this.props;
 
-    form.validateFields((err, fieldsValue) => {
+    form.validateFields(['base', 'role'], (err, fieldsValue) => {
       if (err) return;
-
       const values = {
         ...fieldsValue,
       };
