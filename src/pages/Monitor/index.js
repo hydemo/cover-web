@@ -21,6 +21,7 @@ const coverok = require('../../assets/images/coverok.png');
 const leaks = require('../../assets/images/leaks.png');
 const opens = require('../../assets/images/opens.png');
 const lowbatter = require('../../assets/images/lowbatter.png');
+const wellPng = require('../../assets/images/well2.png');
 
 const { Secured } = Authorized;
 
@@ -283,7 +284,7 @@ class Monitor extends PureComponent {
   render() {
     const { loading, monitor = {} } = this.props;
     const { counts = {} } = monitor;
-    const { open = 0, battery = 0, leak = 0 } = counts;
+    const { open = 0, battery = 0, leak = 0,normal=0 } = counts;
     const { wellData = {}, scaleRatio } = this.state;
     const { status = {} } = wellData;
     const { amplitude = 0, 
@@ -322,6 +323,12 @@ class Monitor extends PureComponent {
                     </Tooltip>
                     <div style={{ width: 10 * scaleRatio }} />
                     {battery}
+                    <div style={{ width: 10 * scaleRatio }} />
+                    <Tooltip title="正常井盖个数">
+                      <img src={wellPng} alt="" style={{ width: 20 * scaleRatio, height: 20 * scaleRatio }} />
+                    </Tooltip>
+                    <div style={{ width: 10 * scaleRatio }} />
+                    {normal}
                   </div>
 
 
@@ -358,7 +365,7 @@ class Monitor extends PureComponent {
                         }
                     >{
                       this.state.isShowAll?
-                      '全部':'所有异常'
+                      '全部井盖':'所有异常'
                     }
                     </div>
                     <div style={{ width: 10 * scaleRatio }} />
