@@ -15,7 +15,7 @@ import {
   Select
 } from 'antd';
 import AccountTable from '@/pages/AccountManagement'
-
+import moment from 'moment';
 import styles from './Index.less';
 
 const FormItem = Form.Item;
@@ -50,6 +50,13 @@ class TableList extends PureComponent {
       dataIndex: 'warningType',
       key: 'warningType',
       render: (text, record) => type[record.warningType],
+
+    },
+    {
+      title: '发生时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text, record) => record.createdAt ? moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : '',
 
     },
     {

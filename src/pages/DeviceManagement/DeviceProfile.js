@@ -37,6 +37,7 @@ class DeviceProfile extends Component {
             <Description term="软件烧写人员">{device.softwareWriter}</Description>
             <Description term="安装人员">{device.installer}</Description>
             <Description term="NB模组号">{device.NBModuleNumber}</Description>
+            <Description col={1} term="电信平台ID">{device.deviceID}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="sim卡信息" style={{ marginBottom: 32 }}>

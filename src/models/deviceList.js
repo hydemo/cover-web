@@ -1,4 +1,4 @@
-import { queryDevices, removeDevice, addDevice, updateDevice, bindSim } from '@/services/device';
+import { queryDevices, removeDevice, addDevice, updateDevice, bindSim, unbindSim } from '@/services/device';
 
 export default {
   namespace: 'deviceList',
@@ -53,6 +53,10 @@ export default {
     },
     *sim({ payload, callback }, { call }) {
       yield call(bindSim, payload);
+      if (callback) callback();
+    },
+    *unbindSim({ payload, callback }, { call }) {
+      yield call(unbindSim, payload);
       if (callback) callback();
     },
     *setPagination({ payload, callback }, { put }) {

@@ -26,6 +26,7 @@ import styles from './Index.less';
 const nameSpace = "wellList"
 
 const FormItem = Form.Item;
+const { confirm } = Modal;
 const { Option } = Select;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
 let authority = JSON.parse(localStorage.getItem('cover-authority'))
@@ -224,6 +225,15 @@ class TableList extends PureComponent {
     });
   };
 
+  unbind = (record, key) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/${key}`,
+      payload: { id: record._id },
+      callback: () => this.fetch()
+    })
+  }
+
   onExtendAction = (key, props) => {
     const { record } = props
     const { dispatch } = this.props;
@@ -233,6 +243,13 @@ class TableList extends PureComponent {
         payload: record,
       })
       router.push('/wellmanagement/wellprofile')
+    } else if (key.indexOf('unbind') > -1) {
+      confirm({
+        title: '确定解绑?',
+        onOk: () => {
+          this.unbind(record, key)
+        },
+      });
     } else {
       this.setState({ type: key, record, modalVisble: true })
     }
@@ -244,7 +261,9 @@ class TableList extends PureComponent {
         overlay={
           <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
             <Menu.Item key="owner"><a style={{ color: "#1890FF" }}>绑定业主</a></Menu.Item>
+            <Menu.Item key="unbindOwner"><a style={{ color: "#1890FF" }}>解绑业主</a></Menu.Item>
             <Menu.Item key="device"><a style={{ color: "#1890FF" }}>绑定设备</a></Menu.Item>
+            <Menu.Item key="unbindDevice"><a style={{ color: "#1890FF" }}>解绑设备</a></Menu.Item>
             <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>窨井详情</a></Menu.Item>
           </Menu>
         }
@@ -269,14 +288,16 @@ class TableList extends PureComponent {
   handleOk = () => {
     const { record, target, type } = this.state;
     const { dispatch } = this.props;
-    dispatch({
-      type: `${nameSpace}/${type}`,
-      payload: {
-        id: record._id,
-        target: target._id,
-      },
-      callback: () => { this.fetch() }
-    })
+    if (record && record._id) {
+      dispatch({
+        type: `${nameSpace}/${type}`,
+        payload: {
+          id: record._id,
+          target: target._id,
+        },
+        callback: () => { this.fetch() }
+      })
+    }
     this.setState({ modalVisble: false })
   };
 
@@ -350,6 +371,7 @@ class TableList extends PureComponent {
           />
         </div>
         <Modal
+          destroyOnClose
           title={type === 'owner' ? "绑定业主" : "绑定设备"}
           visible={modalVisble}
           onOk={this.handleOk}
@@ -359,7 +381,7 @@ class TableList extends PureComponent {
           {
             type === 'owner' ?
               <OwnerTable add={false} update={false} remove={false} rowSelection={rowSelection} /> :
-              <DeviceTable add={false} update={false} remove={false} rowSelection={rowSelection} />
+              <DeviceTable selectCondition={{ isBind: 0 }} add={false} update={false} remove={false} rowSelection={rowSelection} />
           }
         </Modal>
       </Card>

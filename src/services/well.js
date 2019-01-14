@@ -46,4 +46,18 @@ export async function bindDevice(query) {
   });
 }
 
+export async function unbindOwner(query) {
+  return axios({
+    url: `/wells/${query.id}/unbindOwner`,
+    method: 'PUT',
+  });
+}
+
+export async function unbindDevice(query) {
+  return axios({
+    url: `/wells/${query.id}/unbindDevice`,
+    method: 'PUT',
+  });
+}
+
 

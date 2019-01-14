@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, message, Tooltip } from 'antd';
-import { WaterWave, MiniProgress } from '@/components/Charts';
+import { WaterWave } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import axios from 'axios';
 import Authorized from '@/utils/Authorized';
@@ -418,7 +418,7 @@ class Monitor extends PureComponent {
                   <div style={{ width: '6em' }}>超声波频率</div>
                   <div className={styles.minibar}>
                     {/* <MiniProgress percent={frequency / 40000 * 100} strokeWidth={12} target={100} /> */}
-                    <div className={styles.number}>{`${(photoresistor).toFixed(1)}`}</div>
+                    <div className={styles.number}>{`${(frequency).toFixed(1)}`}</div>
                   </div>
 
                 </div>

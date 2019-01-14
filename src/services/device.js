@@ -38,3 +38,10 @@ export async function bindSim(query) {
     method: 'PUT',
   });
 }
+
+export async function unbindSim(query) {
+  return axios({
+    url: `/devices/${query.id}/unbindSim`,
+    method: 'PUT',
+  });
+}

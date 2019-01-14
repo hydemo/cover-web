@@ -1,4 +1,4 @@
-import { queryWells, removeWell, addWell, updateWell, bindOwner, bindDevice } from '@/services/well';
+import { queryWells, removeWell, addWell, updateWell, bindOwner, bindDevice, unbindDevice, unbindOwner } from '@/services/well';
 
 export default {
   namespace: 'wellList',
@@ -42,6 +42,14 @@ export default {
     },
     *device({ payload, callback }, { call }) {
       yield call(bindDevice, payload);
+      if (callback) callback();
+    },
+    *unbindOwner({ payload, callback }, { call }) {
+      yield call(unbindOwner, payload);
+      if (callback) callback();
+    },
+    *unbindDevice({ payload, callback }, { call }) {
+      yield call(unbindDevice, payload);
       if (callback) callback();
     },
     *setPagination({ payload, callback }, { put }) {

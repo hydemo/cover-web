@@ -14,7 +14,7 @@ import {
   Icon,
   Modal,
   Select,
-  InputNumber
+  InputNumber,
 } from 'antd';
 import moment from 'moment';
 /* eslint-disable no-underscore-dangle */
@@ -23,6 +23,7 @@ import SimTable from '@/pages/DeviceManagement/SimList'
 import styles from './Index.less';
 
 const { Option } = Select
+const { confirm } = Modal;
 const nameSpace = "deviceList"
 const status = ['绑定', '异常', '未绑定', '离线']
 
@@ -276,9 +277,25 @@ class TableList extends PureComponent {
         payload: record,
       })
       router.push('/devicemanagement/deviceprofile')
+    } else if (key === 'unbindSim') {
+      confirm({
+        title: '确定解绑?',
+        onOk: () => {
+          this.unbindSim(record)
+        },
+      });
     } else {
       this.setState({ type: key, record, modalVisble: true })
     }
+  }
+
+  unbindSim = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: `${nameSpace}/unbindSim`,
+      payload: { id: record._id },
+      callback: () => this.fetch()
+    })
   }
 
   ExtendAction = (props) => (
@@ -287,6 +304,7 @@ class TableList extends PureComponent {
         overlay={
           <Menu onClick={({ key }) => this.onExtendAction(key, props)}>
             <Menu.Item key="sim"><a style={{ color: "#1890FF" }}>绑定sim卡</a></Menu.Item>
+            <Menu.Item key="unbindSim"><a style={{ color: "#1890FF" }}>解绑sim卡</a></Menu.Item>
             <Menu.Item key="profile"><a style={{ color: "#1890FF" }}>设备详情</a></Menu.Item>
           </Menu>
         }
@@ -316,16 +334,19 @@ class TableList extends PureComponent {
   handleOk = () => {
     const { record, target, type } = this.state;
     const { dispatch } = this.props;
-    dispatch({
-      type: `${nameSpace}/${type}`,
-      payload: {
-        id: record._id,
-        target: target._id,
-      },
-      callback: () => { this.fetch() }
-    })
+    if (record && record._id) {
+      dispatch({
+        type: `${nameSpace}/${type}`,
+        payload: {
+          id: record._id,
+          target: target._id,
+        },
+        callback: () => { this.fetch() }
+      })
+    };
     this.setState({ modalVisble: false })
-  };
+  }
+
 
   renderSimpleForm() {
     const {
@@ -392,13 +413,14 @@ class TableList extends PureComponent {
           />
         </div>
         <Modal
+          destroyOnClose
           title="绑定sim卡"
           visible={modalVisble}
           onOk={this.handleOk}
           onCancel={() => this.setState({ modalVisble: false })}
           width="1000px"
         >
-          <SimTable add={false} update={false} remove={false} rowSelection={rowSelection} />
+          <SimTable selectCondition={{ isBind: 0 }} add={false} update={false} remove={false} rowSelection={rowSelection} />
         </Modal>
       </Card>
     );
