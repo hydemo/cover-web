@@ -44,6 +44,7 @@ class Monitor extends PureComponent {
     this.state = {
       wellData: {},
       scaleRatio: 1,
+      isShowAll:true,
     };
     this.timer = null;
     this.monitorChart = null;
@@ -285,7 +286,13 @@ class Monitor extends PureComponent {
     const { open = 0, battery = 0, leak = 0 } = counts;
     const { wellData = {}, scaleRatio } = this.state;
     const { status = {} } = wellData;
-    const { amplitude = 0, batteryLevel = 0, coverIsOpen = false, distance = 0, frequency = 0, gasLeak = false, photoresistor = 0 } = status;
+    const { amplitude = 0, 
+      batteryLevel = 0, 
+      coverIsOpen = false, 
+      distance = 0, 
+      frequency = 0,
+       gasLeak = false, 
+       photoresistor = 0 } = status;
     return (
       <GridContent>
         <Row gutter={24}>
@@ -344,8 +351,15 @@ class Monitor extends PureComponent {
                       className={styles.btnDIV}
                       style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio }}
 
-                      onClick={() => this.show('getAllWell', 0)}
-                    >全部
+                      onClick={
+                        this.state.isShowAll?
+                         () => this.setState({isShowAll:false},()=>this.show('getAllWell', 0)):
+                         () => this.setState({isShowAll:true},()=>this.show('getUnnarmal', 0))
+                        }
+                    >{
+                      this.state.isShowAll?
+                      '全部':'所有异常'
+                    }
                     </div>
                     <div style={{ width: 10 * scaleRatio }} />
                     <div style={{ width: 10 * scaleRatio }} />

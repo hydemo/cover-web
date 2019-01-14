@@ -6,6 +6,12 @@ import axios from '@/utils/request';
 //     method: 'GET',
 //   });
 // }
+export async function getUnnarmal() {
+  return axios({
+    url: '/wells/unnarmal',
+    method: 'GET',
+  });
+}
 
 export async function getAllWell() {
   return axios({

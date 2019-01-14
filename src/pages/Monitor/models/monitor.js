@@ -1,4 +1,4 @@
-import { getAllWell, getWellOpen, getWellLeak, getWellBattery, getWarnsCount, getHistory } from '@/services/monitor';
+import { getUnnarmal,getAllWell, getWellOpen, getWellLeak, getWellBattery, getWarnsCount, getHistory } from '@/services/monitor';
 
 export default {
   namespace: 'monitor',
@@ -8,6 +8,11 @@ export default {
   },
 
   effects: {
+    *getUnnarmal({ callBack }, { call }) {
+      const response = yield call(getUnnarmal);
+      if (callBack) callBack(response);
+    },
+
     *getAllWell({ callBack }, { call }) {
       const response = yield call(getAllWell);
       if (callBack) callBack(response);
