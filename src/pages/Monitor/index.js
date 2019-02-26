@@ -45,7 +45,7 @@ class Monitor extends PureComponent {
     this.state = {
       wellData: {},
       scaleRatio: 1,
-      isShowAll:true,
+      isShowAll: true,
     };
     this.timer = null;
     this.monitorChart = null;
@@ -284,16 +284,16 @@ class Monitor extends PureComponent {
   render() {
     const { loading, monitor = {} } = this.props;
     const { counts = {} } = monitor;
-    const { open = 0, battery = 0, leak = 0,normal=0 } = counts;
+    const { open = 0, battery = 0, leak = 0, normal = 0 } = counts;
     const { wellData = {}, scaleRatio } = this.state;
     const { status = {} } = wellData;
-    const { amplitude = 0, 
-      batteryLevel = 0, 
-      coverIsOpen = false, 
-      distance = 0, 
+    const { amplitude = 0,
+      batteryLevel = 0,
+      coverIsOpen = false,
+      distance = 0,
       frequency = 0,
-       gasLeak = false, 
-       photoresistor = 0 } = status;
+      gasLeak = false,
+      photoresistor = 0 } = status;
     return (
       <GridContent>
         <Row gutter={24}>
@@ -306,7 +306,7 @@ class Monitor extends PureComponent {
                   ref={(node) => { this.leftTopDiv = node }}
                 >
                   <div className={styles.headerleft} style={{ fontSize: 14 * scaleRatio }}>
-                    <Tooltip title="井盖漏气个数">
+                    <Tooltip title="燃气泄漏个数">
                       <img src={leaks} alt="" style={{ width: 20 * scaleRatio, height: 20 * scaleRatio }} />
                     </Tooltip>
                     <div style={{ width: 10 * scaleRatio }} />
@@ -318,13 +318,13 @@ class Monitor extends PureComponent {
                     <div style={{ width: 10 * scaleRatio }} />
                     {open}
                     <div style={{ width: 10 * scaleRatio }} />
-                    <Tooltip title="井盖低电量个数">
+                    <Tooltip title="设备电量不足个数">
                       <img src={lowbatter} alt="" style={{ width: 20 * scaleRatio, height: 20 * scaleRatio }} />
                     </Tooltip>
                     <div style={{ width: 10 * scaleRatio }} />
                     {battery}
                     <div style={{ width: 10 * scaleRatio }} />
-                    <Tooltip title="正常井盖个数">
+                    <Tooltip title="正常窨井个数">
                       <img src={wellPng} alt="" style={{ width: 20 * scaleRatio, height: 20 * scaleRatio }} />
                     </Tooltip>
                     <div style={{ width: 10 * scaleRatio }} />
@@ -356,23 +356,23 @@ class Monitor extends PureComponent {
                     <div style={{ width: 10 * scaleRatio }} />
                     <div
                       className={styles.btnDIV}
-                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio }}
+                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio, cursor: 'pointer' }}
 
                       onClick={
-                        this.state.isShowAll?
-                         () => this.setState({isShowAll:false},()=>this.show('getAllWell', 0)):
-                         () => this.setState({isShowAll:true},()=>this.show('getUnnarmal', 0))
-                        }
+                        this.state.isShowAll ?
+                          () => this.setState({ isShowAll: false }, () => this.show('getAllWell', 0)) :
+                          () => this.setState({ isShowAll: true }, () => this.show('getUnnarmal', 0))
+                      }
                     >{
-                      this.state.isShowAll?
-                      '全部井盖':'所有异常'
-                    }
+                        this.state.isShowAll ?
+                          '全部井盖' : '所有异常'
+                      }
                     </div>
                     <div style={{ width: 10 * scaleRatio }} />
                     <div style={{ width: 10 * scaleRatio }} />
                     <div
                       className={styles.btnDIV}
-                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio }}
+                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio, cursor: 'pointer' }}
 
                       onClick={() => this.show('getWellBattery', 1)}
                     >电量不足
@@ -381,7 +381,7 @@ class Monitor extends PureComponent {
                     <div style={{ width: 10 * scaleRatio }} />
                     <div
                       className={styles.btnDIV}
-                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio }}
+                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio, cursor: 'pointer' }}
 
                       onClick={() => this.show('getWellLeak', 2)}
                     >  燃气泄漏
@@ -390,7 +390,7 @@ class Monitor extends PureComponent {
                     <div style={{ width: 10 * scaleRatio }} />
                     <div
                       className={styles.btnDIV}
-                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio }}
+                      style={{ padding: 5 * scaleRatio, fontSize: 14 * scaleRatio, cursor: 'pointer' }}
 
                       onClick={() => this.show('getWellOpen', 3)}
                     >  井盖打开

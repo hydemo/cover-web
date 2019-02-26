@@ -25,7 +25,6 @@ import styles from './Index.less';
 const { Option } = Select
 const { confirm } = Modal;
 const nameSpace = "deviceList"
-const status = ['绑定', '异常', '未绑定', '离线']
 
 const FormItem = Form.Item;
 const roleType = { superAdmin: 1, Admin: 2, Operation: 3, User: 4 }
@@ -127,8 +126,8 @@ const CreateForm = Form.create()(props => {
         {
           form.getFieldDecorator('status', {
             rules: [{ required: false, message: '请输入使用状态' }],
-            initialValue: status[record.status],
-          })(<Input disabled placeholder="请输入" />)
+            initialValue: record.status,
+          })(<Input placeholder="请输入" />)
         }
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="NB模组号">
@@ -191,7 +190,6 @@ class TableList extends PureComponent {
       title: '使用状态',
       dataIndex: 'status',
       key: 'status',
-      render: (text, record) => status[record.status]
     },
     {
       title: 'SIM卡号',

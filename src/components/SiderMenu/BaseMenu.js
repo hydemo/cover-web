@@ -55,10 +55,10 @@ export default class BaseMenu extends PureComponent {
         <SubMenu
           title={
             item.icon ? (
-              <span>
+              <div>
                 {getIcon(item.icon)}
                 <span style={{ fontSize: '14px' }}>{name}</span>
-              </span>
+              </div>
             ) : (
                 name
               )

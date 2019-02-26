@@ -118,9 +118,42 @@ justify-content: center;
 align-items: center;
 color: #fff;
 height: 32px;
+position: relative;
 background-color:#1890FF;
 border: 1px solid #1890FF;
 border-radius: 3px;
+}
+
+.btnDIV:after {
+    content: "";
+    display: block;
+    position: absolute;
+    //扩大伪类元素4个方向各10px
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    pointer-events: none;
+    background-color:#1890FF;
+    border: 1px solid #1890FF;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    opacity: 0;
+    transition: all .3s;
+}
+
+.btnDIV:active:after {
+    opacity: .3;
+    //设置初始状态
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0s;
+}
+.btnDIV:hover{
+background-color:rgb(24, 182, 255);
+border: 1px solid rgb(24, 182, 255);
 }
 .number{
   position: absolute;
